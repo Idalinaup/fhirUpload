@@ -1,13 +1,46 @@
+
 @php
-   // dd($object->getItem());
+    // dd($object->getItem());
 @endphp
 
-<h1>
-    {{$object->getUrl()}}
-</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FHIR Questionnaire Viewer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            color: #333;
+        }
 
-@foreach($object->getItem() as $item)
+        h2 {
+            color: #0066cc;
+        }
 
-    @include('artifacts.structure.item')
+        p {
+            margin-bottom: 20px;
+        }
 
-@endforeach
+        div {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h2>FHIR Questionnaire Viewer</h2>
+    
+    <p>
+        The following Questionnaire was loaded from:  {{$object->getUrl()}};
+    </p>
+
+    <div>
+        @foreach($object->getItem() as $item)
+            @include('artifacts.structure.item')
+        @endforeach
+    </div>
+</body>
+</html>
