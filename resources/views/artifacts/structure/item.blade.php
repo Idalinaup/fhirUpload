@@ -1,5 +1,9 @@
 @php
-   $typeObject = $item->getType()
+   $typeObject = $item->getType();
+   $type = $typeObject->getValue();
+
+   $extensionObject = $item->getExtension();
+
 @endphp
 
 <p>
@@ -9,7 +13,9 @@
     {{$text = $item->gettext()}}
 
     {{$type = $typeObject->getValue()}}
-    
+
+    {{$extensionObject = $item->getExtension()}}
+
 </h1>
 
 
@@ -20,81 +26,74 @@
 @endforeach
 
 
-@if ($type == "boolean")
-
-    @include('artifacts.structure.boolean')
-
-@endif
-
-@if ($type == "decimal")
-
-    @include('artifacts.structure.decimal')
-    
-@endif
-
-@if ($type == "integer")
-
-    @include('artifacts.structure.integer')
-    
-@endif
-
-@if ($type == "date")
-
-    @include('artifacts.structure.date')
-
-@endif
-
-@if ($type == "dateTime")
-
-    @include('artifacts.structure.dateTime')
-
-@endif
-
-@if ($type == "time")
-
-    @include('artifacts.structure.time')
-
-@endif
+@foreach($item->getEnableWhen() as $enableWhen)
 
 
-@if ($type == "string")
+    @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
 
-    @include('artifacts.structure.string')
+@endforeach
 
-@endif
-
-@if ($type == "text")
-
-    @include('artifacts.structure.text')
-
-@endif
-
-@if ($type == "url")
-
-    @include('artifacts.structure.url')
-
-@endif
-
-@if ($type == "coding")
-
-    @include('artifacts.structure.coding')
-
-@endif
-
-@if ($type == "attachment")
-
-    @include('artifacts.structure.attachment')
-
-@endif
-
-@if ($type == "reference")
-
-    @include('artifacts.structure.reference')
-
-@endif
+@foreach($extensionObject as $extension)
+    $extension = $object->valueCodeableConcept()->getCoding()->getDisplay();
+@endforeach
 
 
+@switch($type)
+    @case('boolean')
+        @include('artifacts.structure.itemType.boolean')
+        @break
 
+    @case('decimal')
+        @include('artifacts.structure.itemType.decimal')
+        @break
 
+    @case('integer')
+        @include('artifacts.structure.itemType.integer')
+        @break
+
+    @case('date')
+        @include('artifacts.structure.itemType.date')
+        @break
+
+    @case('dateTime')
+        @include('artifacts.structure.itemType.dateTime')
+        @break
+
+    @case('time')
+        @include('artifacts.structure.itemType.time')
+        @break
+
+    @case('string')
+        @include('artifacts.structure.itemType.string')
+        @break
+
+    @case('text')
+        @include('artifacts.structure.itemType.text')
+        @break
+
+    @case('url')
+        @include('artifacts.structure.itemType.url')
+        @break
+
+    @case('choice')
+        @include('artifacts.structure.itemType.choice')
+        @break
+
+    @case('openChoice')
+        @include('artifacts.structure.itemType.openChoice')
+        @break
+
+    @case('quantity')
+        @include('artifacts.structure.itemType.quantity')
+        @break
+
+    @case('attachment')
+        @include('artifacts.structure.itemType.attachment')
+        @break
+
+    @case('reference')
+        @include('artifacts.structure.itemType.reference')
+        @break
+@endswitch
 
 </p>

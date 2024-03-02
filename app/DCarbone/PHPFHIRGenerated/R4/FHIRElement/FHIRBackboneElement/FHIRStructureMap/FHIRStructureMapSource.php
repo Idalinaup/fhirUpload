@@ -145,7 +145,7 @@ class FHIRStructureMapSource extends FHIRBackboneElement
     const FIELD_DEFAULT_VALUE_CANONICAL_EXT = '_defaultValueCanonical';
     const FIELD_DEFAULT_VALUE_CODE = 'defaultValueCode';
     const FIELD_DEFAULT_VALUE_CODE_EXT = '_defaultValueCode';
-    const FIELD_DEFAULT_VALUE_CODEABLE_CONCEPT = 'defaultValueCodeableConcept';
+    const FIELD_DEFAULT_VALUE_CODEABLE_CONCEPT = 'default ';
     const FIELD_DEFAULT_VALUE_CODING = 'defaultValueCoding';
     const FIELD_DEFAULT_VALUE_CONTACT_DETAIL = 'defaultValueContactDetail';
     const FIELD_DEFAULT_VALUE_CONTACT_POINT = 'defaultValueContactPoint';

@@ -1,6 +1,6 @@
 
 @php
-    // dd($object->getItem());
+    //dd($object->getItem());
 @endphp
 
 <!DOCTYPE html>
@@ -30,6 +30,7 @@
         }
     </style>
 </head>
+
 <body>
     <h2>FHIR Questionnaire Viewer</h2>
     
@@ -42,5 +43,6 @@
             @include('artifacts.structure.item')
         @endforeach
     </div>
+    
 </body>
 </html>

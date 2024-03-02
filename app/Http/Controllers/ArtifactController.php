@@ -122,7 +122,7 @@ class ArtifactController extends Controller
     }
 
     public function Testparse(){
-        $selectedArtifact = "artifacts/Real-world lifelines questionnaire.json";
+        $selectedArtifact = "artifacts/Questionnaire-sirb-continuing-review-questionnaire-populate.json";
         $artifactsPath = storage_path('app');
 
         $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
