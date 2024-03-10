@@ -1,0 +1,47 @@
+.flex-container {
+    display: flex;
+    align-items: center;
+}
+
+.inline-element {
+    display: inline-block;
+    margin-right: 10px; /* Adjust as needed */
+    margin: 0;
+}
+
+
+.lf-help-button {
+    position: relative;
+}
+
+.lf-help-button:hover .tooltiptext {
+    display: block;
+}
+
+.tooltiptext {
+    display: none;
+    position: absolute;
+    white-space: nowrap;
+    background-color: #555; /* Background color */
+    color: #fff; /* Text color */
+    text-align: center; /* Center the text */
+    border-radius: 6px; /* Rounded corners */
+    padding: 5px 10px; /* Padding */
+    z-index: 1; /* Make it appear on top */
+}
+
+body {
+    padding: 20px;
+}
+h2 {
+    color: #007bff;
+}
+.questionnaire-info {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+.questionnaire-item {
+    margin-bottom: 15px;
+}

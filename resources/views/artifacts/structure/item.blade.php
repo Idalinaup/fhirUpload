@@ -1,40 +1,40 @@
+<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 @php
    $typeObject = $item->getType();
    $type = $typeObject->getValue();
 
-   $extensionObject = $item->getExtension();
-
 @endphp
 
-<p>
-<h1>
+@if (!Str::endsWith($item->getLinkId(), '_help'))
+    <div class="flex-container">
+        <p class="lead inline-element">{{ $item->getLinkId() }}</p>
+        <p class="lead inline-element">{{ $text = $item->gettext() }}</p>
+@endif
 
-    {{$item->getLinkId()}}
-    {{$text = $item->gettext()}}
-
-    {{$type = $typeObject->getValue()}}
-
-    {{$extensionObject = $item->getExtension()}}
-
-</h1>
-
+        @foreach($item->getItem() as $itemChild)
+            @foreach($itemChild->getExtension() as $extension)
+                @if($extension->getValueCodeableConcept() !== null)
+                    @foreach($extension->getValueCodeableConcept()->getCoding() as $coding)
+                        @if($coding->getDisplay() == "Help-Button")
+                            <span class="inline-element">
+                                @include('artifacts.structure.itemExtension.itemExtension', ['item' => $itemChild])
+                            </span>
+                        @endif
+                    @endforeach
+                @endif
+            @endforeach
+        @endforeach
+    </div>
 
 @foreach($item->getItem() as $itemChild)
+    <div class="questionnaire-item">
+        @include('artifacts.structure.item', ['item' => $itemChild])
 
-    @include('artifacts.structure.item', ['item' => $itemChild])
-
-@endforeach
-
-
-@foreach($item->getEnableWhen() as $enableWhen)
-
-
-    @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
-
-@endforeach
-
-@foreach($extensionObject as $extension)
-    $extension = $object->valueCodeableConcept()->getCoding()->getDisplay();
+        @foreach($itemChild->getEnableWhen() as $enableWhen)
+            @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
+        @endforeach
+    </div>
 @endforeach
 
 
@@ -95,5 +95,11 @@
         @include('artifacts.structure.itemType.reference')
         @break
 @endswitch
+
+@foreach($item->getEnableWhen() as $enableWhen)
+
+    @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
+
+@endforeach
 
 </p>
