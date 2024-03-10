@@ -1,3 +1,5 @@
+<link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 @php
     //dd($object->getItem());
 @endphp

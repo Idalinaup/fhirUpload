@@ -1,6 +1,56 @@
+body {
+    padding: 20px;
+    margin-left: 20px;
+    color: #007bff;
+}
+
+h2 {
+    color: #007bff;
+}
+
+
+.questionnaire-info {
+    background-color: #f8f9fa;
+    color: #000000;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    border-radius: 5px;
+}
+
+.questionnaire-item-type {
+    margin-left: 20px; 
+}
+
+.questionnaire-container {
+    display: flex;
+    flex-direction: column; /* This will stack the children vertically */
+    align-items: start; /* This will align the children to the start of the container */
+}
+
+.questionnaire-item {
+    margin-bottom: 15px; 
+}
+
+.questionnaire-item-sub {
+    margin-bottom: 15px;
+    margin-left: 30px;
+    color: #000000;
+}
+
+.parent-container {
+    display: flex;
+    align-items: right; /* This will align the children vertically in the center */
+}
+
 .flex-container {
     display: flex;
-    align-items: center;
+    align-items: right;
+}
+
+
+.flex-subContainer {
+    background-color: #f8f9fa;
 }
 
 .inline-element {
@@ -12,36 +62,30 @@
 
 .lf-help-button {
     position: relative;
+  display: inline-block;
 }
 
-.lf-help-button:hover .tooltiptext {
-    display: block;
+.flex-half {
+    flex: 1; /* This will make the children take up an equal amount of space */
 }
 
 .tooltiptext {
-    display: none;
-    position: absolute;
-    white-space: nowrap;
-    background-color: #555; /* Background color */
-    color: #fff; /* Text color */
-    text-align: center; /* Center the text */
-    border-radius: 6px; /* Rounded corners */
-    padding: 5px 10px; /* Padding */
-    z-index: 1; /* Make it appear on top */
+    top: -5px;
+  left: 105%;
+    visibility: hidden;
+  width: 300px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
 }
 
-body {
-    padding: 20px;
-}
-h2 {
-    color: #007bff;
-}
-.questionnaire-info {
-    background-color: #f8f9fa;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-}
-.questionnaire-item {
-    margin-bottom: 15px;
+
+.lf-help-button:hover .tooltiptext {
+    visibility: visible;
 }
