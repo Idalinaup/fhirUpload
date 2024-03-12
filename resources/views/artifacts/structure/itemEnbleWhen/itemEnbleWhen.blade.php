@@ -1,13 +1,18 @@
 @php
-
+    $question = $enableWhen->getQuestion();
+    $operator = $enableWhen->getOperator()->getValue();
+   // $answer = $enableWhen->getAnswerCoding()->getCode();
 @endphp
 
-<p>
-<h1>
+<p class="red-text">
 
-Question: {{ $enableWhen->getQuestion() }}
-Operator: {{ $enableWhen->getOperator()->getValue() }}
-Answer: {{ $enableWhen->getAnswerBoolean() }}
+Question: {{ $question }}
+Operator: {{ $operator }}
 
-</h1>
 </p>
+
+<style>
+    .red-text {
+        color: red;
+    }
+</style>

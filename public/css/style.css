@@ -1,11 +1,16 @@
 body {
     padding: 20px;
     margin-left: 20px;
+    margin-right: 20px;
     color: #007bff;
 }
 
 h2 {
     color: #007bff;
+}
+
+.red-text {
+    color: rgb(154, 0, 0);
 }
 
 
@@ -14,12 +19,12 @@ h2 {
     color: #000000;
     padding: 10px;
     margin-bottom: 20px;
-    margin-right: 20px;
     border-radius: 5px;
 }
 
 .questionnaire-item-type {
-    margin-left: 20px; 
+    margin-left: 20px;
+    width: 100%;
 }
 
 .questionnaire-container {
@@ -72,7 +77,7 @@ h2 {
 .tooltiptext {
     top: -5px;
   left: 105%;
-    visibility: hidden;
+  visibility: hidden;
   width: 300px;
   background-color: black;
   color: #fff;
