@@ -7,7 +7,7 @@
         <div class="form-check">
             @if($answerOption->getExtension() != null)
                 @foreach($answerOption->getExtension() as $extension)
-                    <input class="form-check-input" type="checkbox" name="answerOption[]" value="{{ $extension->getValueString() }}">
+                    <input class="form-check-input" type="checkbox" name="linkid[]" value="{{ $extension->getValueString() }}">
                     <label class="form-check-label">
                         {{ $extension->getValueString() }}
                     </label>

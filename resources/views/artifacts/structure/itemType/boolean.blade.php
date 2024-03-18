@@ -1,14 +1,8 @@
 <form>
-    <label>
-        <input type="radio" name="boolean" value="true" onclick="updateValue(this.value)"> Yes
-    </label>
-    <label>
-        <input type="radio" name="boolean" value="false" onclick="updateValue(this.value)"> No
-    </label>
+        <label>
+            <input type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="true" {{ ($item->getreadOnly() == "true")?"disabled":"" }}> Yes
+        </label>
+        <label>
+            <input type="radio" name="boolean" value="false" {{ ($item->getreadOnly() == "true")?"disabled":"" }}> No
+        </label>
 </form>
-
-<script>
-function updateValue(value) {
-    console.log('Selected value: ' + value);
-}
-</script>
