@@ -9,10 +9,6 @@ h2 {
     color: #007bff;
 }
 
-.red-text {
-    color: rgb(154, 0, 0);
-}
-
 
 .questionnaire-info {
     background-color: #f8f9fa;
@@ -43,14 +39,25 @@ h2 {
     color: #000000;
 }
 
-.parent-container {
-    display: flex;
-    align-items: right; /* This will align the children vertically in the center */
-}
 
 .flex-container {
     display: flex;
-    align-items: right;
+    flex-wrap: wrap; /* Allow items to wrap */
+}
+
+.flex-half {
+    flex-basis: 50%; /* Initial basis set to occupy 50% of the space */
+}
+
+
+
+/* Adjustments when there's a third div */
+.flex-container > .flex-half:last-child {
+    flex-basis: 100%; /* Last flex item takes full width */
+}
+
+.flex-container > .flex-half:last-child + div {
+    flex-basis: 50%; /* Second-to-last flex item takes half width */
 }
 
 
@@ -67,8 +74,10 @@ h2 {
 
 .lf-help-button {
     position: relative;
-  display: inline-block;
+    top: -4px; /* Adjust this value as needed */
+    display: inline-block;
 }
+
 
 .flex-half {
     flex: 1; /* This will make the children take up an equal amount of space */
