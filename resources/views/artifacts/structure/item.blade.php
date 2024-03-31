@@ -1,30 +1,24 @@
 @php
-   $typeObject = $item->getType();
-   $type = $typeObject->getValue();
+    $typeObject = $item->getType();
+    $type = $typeObject->getValue();
 
+    $options = collect($item->getExtension())->filter(function ($extension) {
+        return $extension->getValueCoding() !== null && $extension->getValueCoding()->getDisplay() !== null;
+    });
 @endphp
 
 
-<div >
+<div data-linkid="{{$item->getLinkId()}}" >
     <div class="flex-container">
+        <!-- Content for the first div -->
         <div class="flex-half">
             @if (!Str::endsWith($item->getLinkId(), 'help'))
                     <p class="lead inline-element">{{ $text = $item->gettext() }}</p>
+                    <p class="lead inline-element">{{ $LinkId = $item->getLinkId() }}</p>
             @endif
-
-            @if($item->getRequired() == "true")
-                <span class="inline-element">
-                    <p class="lead red-text">*</p>
-                </span>
-            @endif
-        
 
             @foreach($item->getItem() as $itemChild)
-
                 @foreach($itemChild->getExtension() as $extension)
-
-                
-
                     @if($extension->getValueCodeableConcept() !== null)
                         @foreach($extension->getValueCodeableConcept()->getCoding() as $coding)
                             @if($coding->getDisplay() == "Help-Button")
@@ -34,14 +28,13 @@
                             @endif
                         @endforeach
                     @endif
-
-                    
                 @endforeach
             @endforeach
         </div>
 
-        <div class="flex-half">
-            <div class="questionnaire-item-type">
+        <!-- Content for the second div -->
+        <div class="flex-quarter">
+            <div class="questionnaire-item-type" data-linkid="{{ $item->getLinkId() }}">    
                 @switch($type)
                     @case('boolean')
                         @include('artifacts.structure.itemType.boolean')
@@ -101,22 +94,29 @@
                 @endswitch
             </div>
         </div>
+        
+        @foreach($item->getItem() as $itemChild)
+            @if($options->isNotEmpty())
+            <!-- Content for the third div -->
+            <div class="flex-third">
+                <div class="unity">
+                        <select>
+                            @foreach($options as $option)
+                                <option value="{{ $option->getValueCoding()->getDisplay() }}">
+                                      {{ $option->getValueCoding()->getDisplay() }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            @endif
+        @endforeach
     </div>
     
-    <div class="questionnaire-item-sub">
+    <div class="questionnaire-item-sub" >
         @foreach($item->getItem() as $itemChild)
             <div class="questionnaire-item">
                     @include('artifacts.structure.item', ['item' => $itemChild])
-
-                @foreach($itemChild->getExtension() as $extension)
-                    @if($extension->getValueCoding() !== null)
-                    <span>
-                        <p> {{$extension->getValueCoding()->getDisplay()}}</p>
-                    </span>
-                @endif
-            
-                @endforeach
-
                 @foreach($itemChild->getEnableWhen() as $enableWhen)
                     @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
                 @endforeach

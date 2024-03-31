@@ -1,3 +1,3 @@
 <form>
-    <input type="date" {{ ($item->getreadOnly() == "true")?"disabled":"" }}>
+    <input type="date" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" {{ ($item->getreadOnly() == "true")?"disabled":"" }}>
 </form>

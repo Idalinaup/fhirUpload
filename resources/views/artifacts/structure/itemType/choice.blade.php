@@ -7,13 +7,13 @@
         <div class="form-check">
             @if($answerOption->getExtension() != null)
                 @foreach($answerOption->getExtension() as $extension)
-                    <input class="form-check-input" type="checkbox" name="linkid[]" value="{{ $extension->getValueString() }}">
+                    <input class="form-check-input" type="checkbox" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $extension->getValueString() }}">
                     <label class="form-check-label">
                         {{ $extension->getValueString() }}
                     </label>
                 @endforeach
             @else
-                <input class="form-check-input" type="checkbox" name="answerOption[]" value="{{ $answerOption->getValueCoding()->getCode() }}">
+                <input class="form-check-input" type="checkbox" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueCoding()->getCode() }}">
                 <label class="form-check-label">
                     {{ $answerOption->getValueCoding()->getDisplay() }}
                 </label>
@@ -24,7 +24,7 @@
 
 @else
 
-    <select name="answerOption">
+    <select name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}">
         <option value="" disabled selected>Select an option</option>
 
         @foreach($item->getAnswerOption() as $answerOption)

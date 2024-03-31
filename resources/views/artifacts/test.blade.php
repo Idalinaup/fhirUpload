@@ -30,7 +30,9 @@
                 </div>
             @endforeach
         </div>
-</body>
-</html>
 
+        @yield('form_script')
+</body>
+
+</html>
 

@@ -1,3 +1,3 @@
 <form>
-    <input type="number" placeholder="Type a number" {{ ($item->getreadOnly() == "true")?"disabled":"" }} >
+    <input type="number" placeholder="Type a number" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" {{ ($item->getreadOnly() == "true")?"disabled":"" }} >
 </form>
