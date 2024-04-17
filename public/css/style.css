@@ -9,7 +9,6 @@ h2 {
     color: #007bff;
 }
 
-
 .questionnaire-info {
     background-color: #f8f9fa;
     color: #000000;
@@ -20,7 +19,6 @@ h2 {
 
 .questionnaire-item-type {
     margin-left: 20px;
-    width: 100%;
 }
 
 .questionnaire-container {
@@ -39,19 +37,11 @@ h2 {
     color: #000000;
 }
 
-
 .flex-container {
     display: flex;
     flex-wrap: wrap; /* Allow items to wrap */
 }
 
-.flex-half {
-    flex-basis: 50%; /* Initial basis set to occupy 50% of the space */
-}
-
-
-
-/* Adjustments when there's a third div */
 .flex-container > .flex-half:last-child {
     flex-basis: 100%; /* Last flex item takes full width */
 }

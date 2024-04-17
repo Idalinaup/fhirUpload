@@ -12,18 +12,21 @@
     <div class="flex-container">
         <!-- Content for the first div -->
         <div class="flex-half">
-            @if (!Str::endsWith($item->getLinkId(), 'help'))
-                    <p class="lead inline-element">{{ $text = $item->gettext() }}</p>
-                    <p class="lead inline-element">{{ $LinkId = $item->getLinkId() }}</p>
+            @if (!Str::endsWith($item->getLinkId(), 'help') && !Str::startsWith($item->getLinkId(), 'ExternalDataFor'))
+                <p class="lead inline-element">{{ $text = $item->gettext() }}</p>
+                    @if ($item->getRequired() == "true")
+                        <span class="inline-element" style="color: red;">*</span>
+                    @endif
             @endif
 
+            <!-- Help-Button -->
             @foreach($item->getItem() as $itemChild)
                 @foreach($itemChild->getExtension() as $extension)
                     @if($extension->getValueCodeableConcept() !== null)
                         @foreach($extension->getValueCodeableConcept()->getCoding() as $coding)
                             @if($coding->getDisplay() == "Help-Button")
                                 <span class="inline-element">
-                                    @include('artifacts.structure.itemExtension.itemExtension', ['item' => $itemChild])
+                                    @include('artifacts.structure.itemExtension.itemHelp', ['item' => $itemChild])
                                 </span>
                             @endif
                         @endforeach
@@ -34,7 +37,7 @@
 
         <!-- Content for the second div -->
         <div class="flex-quarter">
-            <div class="questionnaire-item-type" data-linkid="{{ $item->getLinkId() }}">    
+            <div class="questionnaire-item-type" >    
                 @switch($type)
                     @case('boolean')
                         @include('artifacts.structure.itemType.boolean')
@@ -99,16 +102,16 @@
             @if($options->isNotEmpty())
             <!-- Content for the third div -->
             <div class="flex-third">
-                <div class="unity">
-                        <select>
-                            @foreach($options as $option)
-                                <option value="{{ $option->getValueCoding()->getDisplay() }}">
-                                      {{ $option->getValueCoding()->getDisplay() }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <select class="form-control">
+                        @foreach($options as $option)
+                            <option value="{{ $option->getValueCoding()->getDisplay() }}">
+                                {{ $option->getValueCoding()->getDisplay() }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
+            </div>
             @endif
         @endforeach
     </div>

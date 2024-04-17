@@ -1,5 +1,7 @@
 @php
     //dd($object->getItem());
+    // Supondo que $questionnaire seja uma instância de Questionnaire e $answers seja um array de respostas
+    
 @endphp
 
 <!DOCTYPE html>
@@ -15,11 +17,12 @@
 </head>
 
 <body>
+    <form action="{{ route('artifacts.response') }}" method="post" enctype="multipart/form-data">
         <h1 class="mt-4 mb-4">FHIR Questionnaire Viewer</h1>
         
         <div class="questionnaire-info">
             <p>
-                The following Questionnaire was loaded from:  {{$object->getUrl()}}
+                The following Questionnaire was loaded from:  {{$object->getId()}}
             </p>
         </div>
 
@@ -32,7 +35,20 @@
         </div>
 
         @yield('form_script')
+        <br>  
+        @csrf
+        <button id="submit-button" type="submit" class="btn btn-success" >SUBMIT</button>
+    </form>
 </body>
 
 </html>
 
+<script> 
+    if ( $item->getRequired() == "true" && $item->getLinkId() == null) {
+        document.getElementById('submit-button').disabled = false;
+    } else {
+        console.log("Item is not required", itemRequired);
+        console.log("Item", itemRequired);
+        document.getElementById('submit-button').disabled = true;
+    }
+</script>

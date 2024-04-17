@@ -1,4 +1,6 @@
 @php
+    $enableBehavior = $itemChild->getEnableBehavior();
+    
     $question = $enableWhen->getQuestion();
 
     $question =  str_replace(".", "\\\\.", $question);
@@ -18,6 +20,7 @@
     $answerReference = $enableWhen->getAnswerReference();
     $answerString = $enableWhen->getAnswerString();
     $answerTime = $enableWhen->getAnswerTime();
+    
     $answer = $answerBoolean ?? $answerCoding ?? $answerDate ?? $answerDateTime ?? $answerDecimal ?? $answerInteger ?? $answerQuantity ?? $answerReference ?? $answerString ?? $answerTime;
 @endphp
 
@@ -27,30 +30,28 @@
 <script>
 $(document).ready(function(){
     $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
-    console.log("{{ $question }}");
 
-    if ($("#{{ $question }}").length) {
-        console.log("Element exists");
-    } else {
-        console.log("Element not found");
-    }
+    @if($operator == "exists")
+        $( "#{{ $question}}" ).on( "change", function() {
+            var value = $(this).val(); // Get the value of the changed element
 
-    // Bind click event to check if it works
-    $("#{{ $question }}").click(function() {
-        console.log("Clicked");
-    });
-
-
-    $( "#{{ $question}}" ).on( "change", function() {
-        console.log("mudou");
-        var value = $(this).val(); // Get the value of the changed element
-        console.log(value);
-        // Assuming $operator is a string representing a comparison operator like "==", "<=", etc.
-        if (eval("'" + value + "'" + '{{$operator}}' + "'" + '{{ $answer }}' + "'")) {
-            alert("enable");
-            $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
-        }
-    });
+            if (value) { // This will be true if value is not null, undefined, or an empty string
+                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
+            }
+        });
+    @else
+        $( "#{{ $question}}" ).on( "change", function() {
+            console.log("{{ $question }} changed");
+            var value = $(this).val(); // Get the value of the changed element
+            console.log("Value: " + value);
+            
+            if (eval("'" + value + "'" + '{{$operator}}' + "'" + '{{ $answer }}' + "'")) {
+                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
+            } else {
+                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
+            }
+        });
+    @endif
 });
 </script>
 @append

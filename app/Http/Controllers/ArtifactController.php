@@ -8,11 +8,6 @@ use Illuminate\Support\Facades\Redirect;
 
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParserConfig;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser; // Add this import statement
-use Illuminate\Support\Facades\Log;
-use DCarbone\PHPFHIRGenerated\R4\FHIRResource\FHIRDomainResource\FHIRQuestionnaire;
-use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRBackboneElement\FHIRQuestionnaire\FHIRQuestionnaireItem;
-use DCarbone\PHPFHIRGenerated\R4\FHIRResource\FHIRDomainResource\FHIRLinkage;
-
 
 
 class ArtifactController extends Controller
@@ -35,112 +30,6 @@ class ArtifactController extends Controller
         $file->storeAs('artifacts', $file->getClientOriginalName());
 
         return Redirect::route('artifacts.index')->with('success', 'Arquivo enviado com sucesso!');
-    }
-
-    public function parseFHIRQuestionnaire(Request $request){
-        $selectedArtifact = $request->input('selectedArtifact');
-        $artifactsPath = storage_path('app');
-
-        $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
-        $filePath = $artifactsPath . '/' . $selectedArtifactName;
-
-        $config = new PHPFHIRResponseParserConfig([
-             'registerAutoloader' => true, // use if you are not using Composer
-             'sxeArgs' => LIBXML_COMPACT | LIBXML_NSCLEAN // choose different libxml arguments if you want, ymmv.
-         ]);
-
-
-        $parser = new PHPFHIRResponseParser($config);
-
-        $content = file_get_contents($filePath);
-
-        $object = $parser->parse($content);
-
-        dd($object);
-
-        $data = [];
-
-        if ($object instanceof FHIRQuestionnaire) {
-            $data['Url'] = $object->getUrl();
-            $data['Identifier'] = $object->getIdentifier();
-            $data['Version'] = $object->getVersion();
-            $data['Name'] = $object->getName();
-            $data['Title'] = $object->getTitle();
-            $data['Status'] = $object->getStatus();
-            $data['subjectType'] = $object->getsubjectType();
-            $data['description'] = $object->getdescription();
-
-            Log::info($data['Url']);
-
-            $ItemsData = [];
-
-            $Items = $object->getItem();
-            
-            
-            foreach ($Items as $item) {
-                Log::info("----------------");
-
-                $linkId = $item->getLinkId();
-                Log::info($linkId);
-                
-                $text = $item->gettext();
-                Log::info($text);
-                
-
-                if ($item instanceof FHIRQuestionnaireItem) {
-                    $typeObject = $item->getType();
-                
-                    $type = $typeObject->getValue();
-                
-                    Log::info($type);
-                }
-
-                $Items_1 = $item->getItem();
-                //Log::info($Items_1);
-
-                foreach ($Items_1 as $item_1) {
-                    $linkId = $item_1->getLinkId();
-                    Log::info($linkId);
-                    
-                    $text = $item_1->gettext();
-                    Log::info($text);
-
-                    if ($item_1 instanceof FHIRQuestionnaireItem) {
-                        $typeObject = $item_1->getType();
-                    
-                        $type = $typeObject->getValue();
-                    
-                        Log::info($type);
-                    }
-                }
-            
-            }
-             
-        }
-
-        return response()->json(['data' => $data]);
-    }
-
-    public function Testparse(){
-        $selectedArtifact = "artifacts/Questionnaire-sirb-adverse-event-questionnaire-populate.json";
-        $artifactsPath = storage_path('app');
-
-        $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
-        $filePath = $artifactsPath . '/' . $selectedArtifactName;
-
-        $config = new PHPFHIRResponseParserConfig([
-             'registerAutoloader' => true, // use if you are not using Composer
-             'sxeArgs' => LIBXML_COMPACT | LIBXML_NSCLEAN // choose different libxml arguments if you want, ymmv.
-         ]);
-
-
-        $parser = new PHPFHIRResponseParser($config);
-
-        $content = file_get_contents($filePath);
-
-        $object = $parser->parse($content);
-
-        return view('artifacts.test', compact('object'));
     }
 
     public function generateForm(Request $request) {
@@ -168,15 +57,30 @@ class ArtifactController extends Controller
         }
     }
 
+    public function FHIRQuestionnaireViewer(){
+        $selectedArtifact = "artifacts/Questionnaire-sirb-adverse-event-questionnaire-populate.json";
+        $artifactsPath = storage_path('app');
 
-    public function removerArtifacts(){
-    // Remova os arquivos do diretório 'artifacts'
-    $artifacts = Storage::files('artifacts');
-    Storage::delete($artifacts);
+        $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
+        $filePath = $artifactsPath . '/' . $selectedArtifactName;
 
-    return response()->json(['message' => 'Arquivos removidos com sucesso']);
+        $config = new PHPFHIRResponseParserConfig([
+             'registerAutoloader' => true, // use if you are not using Composer
+             'sxeArgs' => LIBXML_COMPACT | LIBXML_NSCLEAN // choose different libxml arguments if you want, ymmv.
+         ]);
+
+
+        $parser = new PHPFHIRResponseParser($config);
+
+        $content = file_get_contents($filePath);
+
+        $object = $parser->parse($content);
+
+        return view('artifacts.FHIRQuestionnaireViewer', compact('object'));
     }
 
-
-
+    public function FHIRQuestionnaireResponse(Request $request){
+    dd($request->all());
+    
+    }
 }

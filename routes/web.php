@@ -27,4 +27,7 @@ Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.
 Route::post('/artifacts/upload', [ArtifactController::class, 'upload'])->name('artifacts.upload');
 Route::post('/artifacts/generate', [ArtifactController::class, 'generateForm'])->name('artifacts.generate');
 Route::post('/artifacts/generate/FHIRQuestionnaire', [ArtifactController::class, 'parseFHIRQuestionnaire'])->name('artifacts.generateView');
-Route::get('/artifacts/generate/test', [ArtifactController::class, 'Testparse'])->name('artifacts.Testparse');
+
+Route::post('/artifacts/generate/FHIRQuestionnaireResponse', [ArtifactController::class, 'FHIRQuestionnaireResponse'])->name('artifacts.response');
+
+Route::get('/artifacts/generate/FHIRQuestionnaireViewer', [ArtifactController::class, 'FHIRQuestionnaireViewer'])->name('artifacts.FHIRQuestionnaireViewer');

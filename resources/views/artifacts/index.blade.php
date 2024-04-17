@@ -112,12 +112,7 @@
                     $('#viewContent').html(`
                     <h2>Conteúdo do Arquivo </h2>
                     <p>url: ${data.Url.value}</p>
-
-                    
-
-                    `);
-
-
+                    `);  
                 },
                 error: function(xhr, status, error) {
                     console.log(error);
