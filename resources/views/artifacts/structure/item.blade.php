@@ -1,6 +1,9 @@
 @php
-    $typeObject = $item->getType();
-    $type = $typeObject->getValue();
+    use Illuminate\Support\Facades\Log;
+   // $typeObject = $item->getType();
+    $type = $item->getType()->getValue();
+
+    $typeQuestionnaireArray = [];
 
     $options = collect($item->getExtension())->filter(function ($extension) {
         return $extension->getValueCoding() !== null && $extension->getValueCoding()->getDisplay() !== null;
@@ -37,7 +40,8 @@
 
         <!-- Content for the second div -->
         <div class="flex-quarter">
-            <div class="questionnaire-item-type" >    
+            <div class="questionnaire-item-type" >  
+                <input type="hidden" name="typeQuestionnaire" id="typeQuestionnaire" value="{{ json_encode($typeQuestionnaireArray) }}">
                 @switch($type)
                     @case('boolean')
                         @include('artifacts.structure.itemType.boolean')
@@ -118,6 +122,10 @@
     
     <div class="questionnaire-item-sub" >
         @foreach($item->getItem() as $itemChild)
+            @php
+                $typeQuestionnaire = $item->getType();
+                $typeQuestionnaireArray[] = $typeQuestionnaire;
+            @endphp
             <div class="questionnaire-item">
                     @include('artifacts.structure.item', ['item' => $itemChild])
                 @foreach($itemChild->getEnableWhen() as $enableWhen)
@@ -125,6 +133,9 @@
                 @endforeach
             </div>
         @endforeach
+        @php
+            Log::debug(json_encode($typeQuestionnaireArray));
+        @endphp
     </div>
 </div>
 

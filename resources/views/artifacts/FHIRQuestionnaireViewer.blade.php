@@ -1,7 +1,7 @@
 @php
-    //dd($object->getItem());
+    //dd($objectQuestionnaire->getItem());
     // Supondo que $questionnaire seja uma instância de Questionnaire e $answers seja um array de respostas
-    
+    use Illuminate\Support\Facades\Log;
 @endphp
 
 <!DOCTYPE html>
@@ -13,25 +13,34 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FHIR Questionnaire Viewer</title>
 </head>
 
 <body>
     <form action="{{ route('artifacts.response') }}" method="post" enctype="multipart/form-data">
-        <h1 class="mt-4 mb-4">FHIR Questionnaire Viewer</h1>
-        
+        <input type="hidden" name="Id" id="Id" value="{{ $objectQuestionnaire->getId() }}">
+        <input type="hidden" name="objectQuestionnaire" id="objectQuestionnaire" value="{{ $objectQuestionnaire}}">
+        <input type="hidden" name="status" id="status" value="{{ $objectQuestionnaire->getstatus() }}">
+        <br>
         <div class="questionnaire-info">
             <p>
-                The following Questionnaire was loaded from:  {{$object->getId()}}
+                The following Questionnaire was loaded from:  {{$objectQuestionnaire->getId()}}
             </p>
         </div>
 
         <div>
-            @foreach($object->getItem() as $item)
+            @foreach($objectQuestionnaire->getItem() as $item)
+
                 <div class="questionnaire-item">
                     @include('artifacts.structure.item')
                 </div>
+                @php
+                    $typeQuestionnaire = $item->getType();
+                    $typeQuestionnaireArray[] = $typeQuestionnaire;
+                @endphp
             @endforeach
+            @php
+                //Log::debug(json_encode($typeQuestionnaireArray));
+            @endphp
         </div>
 
         @yield('form_script')
@@ -43,8 +52,27 @@
 
 </html>
 
+<script>
+    $(document).ready(function() {
+        $('#submit-button').click(function() {
+            $.ajax({
+                url: '/artifacts/generate/FHIRQuestionnaireResponse',
+                method: 'POST',
+                data: {
+                    selectedArtifact: $('#selectedArtifact').val(), 
+                 },
+                 success: function(data) {
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
 <script> 
-    if ( $item->getRequired() == "true" && $item->getLinkId() == null) {
+    if ( $item->getRequired() === "true" && $item->getLinkId() == null) {
         document.getElementById('submit-button').disabled = false;
     } else {
         console.log("Item is not required", itemRequired);

@@ -26,7 +26,7 @@ use App\Http\Controllers\ArtifactController;
 Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.index');
 Route::post('/artifacts/upload', [ArtifactController::class, 'upload'])->name('artifacts.upload');
 Route::post('/artifacts/generate', [ArtifactController::class, 'generateForm'])->name('artifacts.generate');
-Route::post('/artifacts/generate/FHIRQuestionnaire', [ArtifactController::class, 'parseFHIRQuestionnaire'])->name('artifacts.generateView');
+Route::get('/artifacts/generate/FHIRQuestionnaire', [ArtifactController::class, 'parseFHIRQuestionnaire'])->name('artifacts.generateView');
 
 Route::post('/artifacts/generate/FHIRQuestionnaireResponse', [ArtifactController::class, 'FHIRQuestionnaireResponse'])->name('artifacts.response');
 

@@ -1,5 +1,5 @@
 @php
-    $initialValue = ""; // Initialize $initialValue
+    $initialValue = null; // Initialize $initialValue
 
 foreach($item->getInitial() as $initial){
         $initialBoolean = $initial->getValueBoolean();
@@ -18,4 +18,4 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
-<input type="date" class="form-control" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+<input type="date" class="form-control" name={{$item->getLinkId()}} id={{$item->getLinkId()}} value={{ $initialValue }} {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>

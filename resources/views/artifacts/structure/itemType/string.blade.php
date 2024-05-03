@@ -20,4 +20,4 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
-<input type="text" class="form-control" placeholder="Insert your text here" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+<input type="text" class="form-control" placeholder="Insert your text here" name={{$item->getLinkId()}} id={{$item->getLinkId()}} value={{ $initialValue }} {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>

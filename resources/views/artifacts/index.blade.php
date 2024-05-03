@@ -101,7 +101,7 @@
         $('#gerarFormularioView').click(function() {
             $.ajax({
                 url: '/artifacts/generate/FHIRQuestionnaire',
-                method: 'POST',
+                method: 'GET',
                 data: {
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     selectedArtifact: $('#selectedArtifact').val(), 
@@ -109,10 +109,7 @@
                  success: function(response) {
                     var data = response.data;
 
-                    $('#viewContent').html(`
-                    <h2>Conteúdo do Arquivo </h2>
-                    <p>url: ${data.Url.value}</p>
-                    `);  
+                    $('#viewContent').html(response);  
                 },
                 error: function(xhr, status, error) {
                     console.log(error);
@@ -131,7 +128,6 @@
                 url: '/artifacts/generate',
                 method: 'POST',
                 data: {
-                    id: 1,
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     selectedArtifact: $('#selectedArtifact').val(), 
                  },

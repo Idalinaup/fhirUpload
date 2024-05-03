@@ -18,13 +18,26 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
-<div class="form-check">
-    <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value=true {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
-    <label class="form-check-label" for="{{$item->getLinkId()}}_">Yes</label>
-</div>
-<div class="form-check">
-    <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value=false {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
-    <label class="form-check-label" for="{{$item->getLinkId()}}">No</label>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}_true" value="true" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+            <label class="form-check-label" for="{{$item->getLinkId()}}_true">Yes</label>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}_false" value="false" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+            <label class="form-check-label" for="{{$item->getLinkId()}}_false">No</label>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}_null" value=null>
+            <label class="form-check-label" for="{{$item->getLinkId()}}_null">Don't answer</label>
+        </div>
+    </div>
+     
 </div>
 
 
