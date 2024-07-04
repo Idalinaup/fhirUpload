@@ -2,6 +2,7 @@
     //dd($objectQuestionnaire->getItem());
     // Supondo que $questionnaire seja uma instância de Questionnaire e $answers seja um array de respostas
     use Illuminate\Support\Facades\Log;
+    //$typeQuestionnaireArray = [];
 @endphp
 
 <!DOCTYPE html>
@@ -20,6 +21,11 @@
         <input type="hidden" name="Id" id="Id" value="{{ $objectQuestionnaire->getId() }}">
         <input type="hidden" name="objectQuestionnaire" id="objectQuestionnaire" value="{{ $objectQuestionnaire}}">
         <input type="hidden" name="status" id="status" value="{{ $objectQuestionnaire->getstatus() }}">
+        <input type="hidden" name="selectedArtifact" id="selectedArtifact" value="{{$selectedArtifactName}}">
+        @php
+        //Log::debug($objectQuestionnaire);
+        @endphp
+
         <br>
         <div class="questionnaire-info">
             <p>
@@ -29,18 +35,16 @@
 
         <div>
             @foreach($objectQuestionnaire->getItem() as $item)
+            @php
+            //   $type = $item->getType()->getValue();
+            //   log::debug(json_encode($type));
+            @endphp
 
                 <div class="questionnaire-item">
                     @include('artifacts.structure.item')
                 </div>
-                @php
-                    $typeQuestionnaire = $item->getType();
-                    $typeQuestionnaireArray[] = $typeQuestionnaire;
-                @endphp
+
             @endforeach
-            @php
-                //Log::debug(json_encode($typeQuestionnaireArray));
-            @endphp
         </div>
 
         @yield('form_script')
@@ -69,14 +73,4 @@
             });
         });
     });
-</script>
-
-<script> 
-    if ( $item->getRequired() === "true" && $item->getLinkId() == null) {
-        document.getElementById('submit-button').disabled = false;
-    } else {
-        console.log("Item is not required", itemRequired);
-        console.log("Item", itemRequired);
-        document.getElementById('submit-button').disabled = true;
-    }
 </script>

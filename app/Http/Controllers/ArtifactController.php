@@ -37,11 +37,6 @@ use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRDateTime;
 use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRQuestionnaireResponseStatus;
 use Illuminate\Support\Facades\Log;
 
-
-
-
-
-
 class ArtifactController extends Controller
 {
     public function index()
@@ -54,37 +49,36 @@ class ArtifactController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:json,xml|max:2048',
+            ['file' => 'required|mimes:application/json']
         ]);
 
         $file = $request->file('file');
         $file->storeAs('artifacts', $file->getClientOriginalName());
-
+        log::debug($file);
         return Redirect::route('artifacts.index')->with('success', 'Arquivo enviado com sucesso!');
     }
 
     public function generateForm(Request $request) {
         $selectedArtifact = $request->input('selectedArtifact');
+        log::debug($selectedArtifact);
         $artifactsPath = storage_path('app');
         $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
         $filePath = $artifactsPath . '/' . $selectedArtifactName;
         $content = file_get_contents($filePath);
     
-        // File content handling
         if (file_exists($filePath)) {
+            log::debug("idalina");
             $extension = pathinfo($filePath, PATHINFO_EXTENSION);
     
             if ($extension === 'json') {
                 $decodedContent = json_decode($content, true);
                 return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => $decodedContent]);
-            } elseif ($extension === 'xml') {
-                $xml = simplexml_load_string($content);
-                return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => $xml]);
             } else {
-                return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => 'Tipo de arquivo não suportado']);
+                return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => 'Tipo de arquivo nÃ£o suportado']);
             }
         } else {
-            return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => 'Arquivo não encontrado']);
+            log::debug("Joao");
+            return response()->json(['selectedArtifactName' => $selectedArtifactName, 'fileContent' => 'Arquivo nÃ£o encontrado']);
         }
     }
 
@@ -100,7 +94,74 @@ class ArtifactController extends Controller
         $filePath = $artifactsPath . '/' . $selectedArtifactName;
 
         $config = new PHPFHIRResponseParserConfig([
-             'registerAutoloader' => true, // use if you are not using Composer
+             'sxeArgs' => LIBXML_COMPACT | LIBXML_NSCLEAN // choose different libxml arguments if you want, ymmv.
+        ]);
+
+        $parser = new PHPFHIRResponseParser($config);
+
+        $content = file_get_contents($filePath);
+
+        $objectQuestionnaire = $parser->parse($content);
+
+        return view('artifacts.FHIRQuestionnaireViewer', compact('objectQuestionnaire' , 'selectedArtifactName'));
+    }
+
+    public function FHIRQuestionnaireResponseItemsLoop($objectQuestionnaire, $response, $answers ){
+	
+        foreach ($objectQuestionnaire->getItem() as $itemQuestionnaire) {
+  
+            $type = $itemQuestionnaire->getType()->getValue()->getValue();
+  
+            if ($type == 'group') {
+
+                $linkId = $itemQuestionnaire->getLinkId()->getValue()->getValue();
+                  //$response-> kk coisa para por o grupo na response
+                $itemGroup = new FHIRQuestionnaireResponseItem();
+  
+                $itemGroup->setLinkId(new FHIRString((string) $linkId)); 
+
+                $itemGroup->setText ($itemQuestionnaire->gettext()); 
+                   
+                $itemGroup = $this->FHIRQuestionnaireResponseItemsLoop($itemQuestionnaire, $itemGroup, $answers );
+                  
+                $response->addItem($itemGroup);
+                  
+            }else{
+
+                $linkId = $itemQuestionnaire->getLinkId()->getValue()->getValue();
+
+                if(isset($answers[str_replace(".", "_", $linkId)])){
+                      $answer = $answers[str_replace(".", "_", $linkId)];
+                }
+
+                else{
+                      //dd(str_replace("\.", "_", $linkId));
+                    continue;
+                }
+                  
+                $response->addItem($this->FHIRQuestionnaireResponseItem($itemQuestionnaire, $answer));
+            }
+        }
+  
+        return $response;
+    }
+
+
+
+    public function FHIRQuestionnaireResponse(Request $request){
+
+        $id = $request->input('Id');
+        //$type = $request->input('type');
+        $answers = $request->all();
+
+        $selectedArtifact = $request->input('selectedArtifact');
+
+        $artifactsPath = storage_path('app');
+
+        $selectedArtifactName = is_array($selectedArtifact) ? $selectedArtifact[0] : $selectedArtifact;
+        $filePath = $artifactsPath . '/' . $selectedArtifactName;
+
+        $config = new PHPFHIRResponseParserConfig([
              'sxeArgs' => LIBXML_COMPACT | LIBXML_NSCLEAN // choose different libxml arguments if you want, ymmv.
          ]);
 
@@ -109,27 +170,6 @@ class ArtifactController extends Controller
         $content = file_get_contents($filePath);
 
         $objectQuestionnaire = $parser->parse($content);
-
-        return view('artifacts.FHIRQuestionnaireViewer', compact('objectQuestionnaire'));
-    }
-
-
-
-    public function FHIRQuestionnaireResponse(Request $request){
-        // Get input parameters
-        //$statusValue = $request->input('status');
-
-        $id = $request->input('Id');
-        $type = $request->input('typeQuestionnaire');
-        $answers = $request->all();
-
-        //Log::debug($type);
-
-        //dd($type);
-
-        $selectedArtifact = $request->input('selectedArtifact');
-
-        //$selectedArtifact = $request->all();
 
         $response = new FHIRQuestionnaire();
     
@@ -183,71 +223,89 @@ class ArtifactController extends Controller
         $source = new FHIRReference(['reference' => 'Reference(Device|Organization|Patient|Practitioner|PractitionerRole|RelatedPerson)']);
         $response->setSource($source);
 
-            foreach ($answers as $linkId => $answer) {
+		$response = $this->FHIRQuestionnaireResponseItemsLoop($objectQuestionnaire, $response, $answers);
 
-                $item = new FHIRQuestionnaireResponseItem();
-
-                $item->setLinkId(new FHIRString((string) $linkId)); 
-
-                $item->setText(new FHIRString(("Text"))); 
-
-                $item->setDefinition(new FHIRUri(("Uri"))); 
-
-                //Log::debug($linkId);
-
-                //Log::debug($answer);
-
-
-                    $answerItem = new FHIRQuestionnaireResponseAnswer();
-
-                    $answerType = gettype($answer);
-                    
-
-                    switch ($answerType) {
-                        case 'boolean':
-                            $booleanValue = ($answer === 'true');
-                            $answerItem->setValueBoolean(new FHIRBoolean($answer));
-                            break;
-                        case 'decimal':
-                            $answerItem->setValueDecimal(new FHIRDecimal($answer));
-                            break;
-                        case 'integer':
-                            $answerItem->setValueInteger(new FHIRInteger($answer));
-                            break;
-                        case 'date':
-                            $answerItem->setValueDate(new FHIRDate($answer));
-                            break;
-                        case 'dateTime':
-                            $answerItem->setValueDateTime(new FHIRDateTime($answer));
-                            break;
-                        case 'time':
-                            $answerItem->setValueTime(new FHIRTime($answer));
-                            break;
-                        case 'string':
-                            $answerItem->setValueString(new FHIRString($answer));
-                            break;
-                        case 'url':
-                            $answerItem->setValueUri(new FHIRUri($answer));
-                            break;
-                        case 'attachment':
-                            $answerItem->setValueAttachment(new FHIRAttachment($answer));
-                            break;
-                        case 'reference':
-                            $answerItem->setValueReference(new FHIRReference($answer));
-                            break;
-                        case 'quantity':
-                            $answerItem->setValueQuantity(new FHIRQuantity($answer));
-                            break;
-                        case 'coding':
-                            $answerItem->setValueCoding(new FHIRCoding($answer));
-                            break;
-                    }
-
-                $item->addAnswer($answerItem);
-
-                $response->addItem($item);
-
-            }
         return response()->json($response);
     }
+	
+	public function FHIRQuestionnaireResponseItem($itemQuestionnaire, $answer){
+      
+        $linkId = $itemQuestionnaire->getLinkId()->getValue()->getValue();
+        $answerType = $itemQuestionnaire->getType()->getValue()->getValue();
+
+        $item = new FHIRQuestionnaireResponseItem();
+
+        $item->setLinkId(new FHIRString((string) $linkId)); 
+                
+        $item->setText ($itemQuestionnaire->gettext()); 
+
+        $answerItem = new FHIRQuestionnaireResponseAnswer();
+        
+            switch ($answerType) {
+                case 'boolean':
+                    $answerItem->setValueBoolean(new FHIRBoolean($answer));
+                    break;
+                case 'decimal':
+                    $answerItem->setValueDecimal(new FHIRDecimal($answer));
+                    break;
+                case 'integer':
+                    $answerItem->setValueInteger(new FHIRInteger($answer));
+                    break;
+                case 'date':
+                    $answerItem->setValueDate(new FHIRDate($answer));
+                    break;
+                case 'dateTime':
+                    $answerItem->setValueDateTime(new FHIRDateTime($answer));
+                    break;
+                case 'time':
+                    $answerItem->setValueTime(new FHIRTime($answer));
+                    break;
+                case 'string':
+                    $answerItem->setValueString(new FHIRString($answer));
+                    break;
+                case 'url':
+                    $answerItem->setValueUri(new FHIRUri($answer));
+                    break;
+                case 'attachment':
+                    $answerItem->setValueAttachment(new FHIRAttachment($answer));
+                    break;
+                case 'reference':
+                    $answerItem->setValueReference(new FHIRReference($answer));
+                    break;
+                case 'quantity':
+                    //dd($itemQuestionnaire);
+                    $answerData = [
+                        'value' => (is_array($answer)?$answer[0]:$answer), // assuming $answer is a numeric value
+                        'unit' => (is_array($answer)?$answer[1]:""),   
+                        // 'system' => 'system', replace 'system' with the actual system
+                        //'code' => 'code', // replace 'code' with the actual code
+                    ];
+                    $answerItem->setValueQuantity(new FHIRQuantity($answerData));
+                    break;
+                case 'coding':
+                    log::debug("coding:", $answer);
+                    $answerItem->setValueCoding(new FHIRCoding($answer));
+                    break;
+                case 'choice':
+                    log::debug( $answer); 
+
+                    $code = trim(substr($answer, $codeStart = strpos($answer, 'code:') + strlen('code:'), strpos($answer, 'display:') - $codeStart));
+                    $display = trim(substr($answer, $displayStart = strpos($answer, 'display:') + strlen('display:'), strpos($answer, 'system:') - $displayStart));
+                    $system = trim(substr($answer, $systemStart = strpos($answer, 'system:') + strlen('system:')));
+
+                    $answerData = [
+                        'value' =>(is_array($answer)?$answer[0]:$answer),  // assuming $answer is a numeric value
+                        'system' => $system ? $system : null,
+                        'code' => $code ? $code : null,
+                        'display' => $display ? $display : null,
+                    ];
+                    $answerItem->setValueCoding(new FHIRCoding($answerData));
+                    break;
+            }
+
+        $item->addAnswer($answerItem);
+    
+    return $item;
+    }
+		
 }

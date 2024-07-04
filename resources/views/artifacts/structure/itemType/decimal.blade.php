@@ -19,5 +19,14 @@ foreach($item->getInitial() as $initial){
 @endphp
 
 <div class="form-group">
-    <input type="number" class="form-control" placeholder="Insert number here" value="{{ $initialValue }}" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+    <input type="number" 
+           class="form-control" 
+           placeholder="Enter your number here" 
+           name="{{ $item->getLinkId() }}" 
+           id="{{ $item->getLinkId() }}" 
+           value="{{ $initialValue }}"
+           min="{{ $item->getExtensionValue('http://hl7.org/fhir/StructureDefinition/minValue') }}"
+           max="{{ $item->getExtensionValue('http://hl7.org/fhir/StructureDefinition/maxValue') }}"
+           {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
 </div>
+

@@ -25,11 +25,15 @@
             <div id="flash-message" class="alert alert-success">{{ session('success') }}</div>
         @endif
 
+        @if(session('error'))
+            <div id="flash-message" class="alert alert-danger">{{ session('error') }}</div>
+        @endif
+
         <form action="{{ route('artifacts.upload') }}" method="post" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-                <label for="file" class="form-label">Selecione o template FHIR em Formato .json ou .xml:</label>
-                <input class="form-control" type="file" name="file" id="file" accept=".json,.xml">
+                <label for="file" class="form-label">Selecione o template FHIR em Formato .json:</label>
+                <input class="form-control" type="file" name="file" id="file" >
             </div>
             <button type="submit" class="btn btn-primary">Enviar</button>
         </form>
@@ -37,7 +41,6 @@
         <hr>
 
         <h2 class="mb-3">Arquivos existentes:</h2>
-        
         <form action="{{ route('artifacts.generate') }}" method="post" >
             @csrf
             <div class="mb-3">
@@ -48,19 +51,21 @@
                     @endforeach
                 </select>
             </div>
+            <div style="display: flex; align-items: center; margin-top: 10px;">
             <button type="button" class="btn btn-success" id="gerarFormulario">Gerar Formulário Json</button>
             <!-- <button type="button" class="btn btn-danger" onclick="confirmRemoveSelected()">Apagar</button> -->
         </form>
 
-        <div style="margin-top: 10px;"></div>
+        <div style="margin-right: 10px"></div>
 
         <form action="{{ route('artifacts.generateView') }}" method="post" >
             @csrf
             <button type="button" class="btn btn-success" id="gerarFormularioView">Gerar Formulário</button>
         </form>
 
-    </div>
+        </div>
 
+    </div>
     <!-- Coluna 2: Tabs "View" e "JSON" -->
     <div class="col-md-6">
         <ul class="nav nav-tabs" id="myTabs">
@@ -135,7 +140,6 @@
                     var fileContent = data.fileContent;
 
                     $('#jsonContent').html(`
-                        <h2>Conteúdo do Arquivo</h2>
                         <p>Arquivo Selecionado:  ${data.selectedArtifactName}</p>
                         <pre>${JSON.stringify(fileContent, null, 2)}</pre>
                     `);

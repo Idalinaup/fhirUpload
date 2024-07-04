@@ -3,8 +3,6 @@
    // $typeObject = $item->getType();
     $type = $item->getType()->getValue();
 
-    $typeQuestionnaireArray = [];
-
     $options = collect($item->getExtension())->filter(function ($extension) {
         return $extension->getValueCoding() !== null && $extension->getValueCoding()->getDisplay() !== null;
     });
@@ -41,7 +39,7 @@
         <!-- Content for the second div -->
         <div class="flex-quarter">
             <div class="questionnaire-item-type" >  
-                <input type="hidden" name="typeQuestionnaire" id="typeQuestionnaire" value="{{ json_encode($typeQuestionnaireArray) }}">
+                <input type="hidden" name="type" id="type" value="{{ $type }}">
                 @switch($type)
                     @case('boolean')
                         @include('artifacts.structure.itemType.boolean')
@@ -107,7 +105,7 @@
             <!-- Content for the third div -->
             <div class="flex-third">
                 <div class="form-group">
-                    <select class="form-control">
+                    <select name="{{$item->getLinkId()}}[]" class="form-control">
                         @foreach($options as $option)
                             <option value="{{ $option->getValueCoding()->getDisplay() }}">
                                 {{ $option->getValueCoding()->getDisplay() }}
@@ -119,23 +117,16 @@
             @endif
         @endforeach
     </div>
-    
+
     <div class="questionnaire-item-sub" >
         @foreach($item->getItem() as $itemChild)
-            @php
-                $typeQuestionnaire = $item->getType();
-                $typeQuestionnaireArray[] = $typeQuestionnaire;
-            @endphp
             <div class="questionnaire-item">
-                    @include('artifacts.structure.item', ['item' => $itemChild])
+                @include('artifacts.structure.item', ['item' => $itemChild])
                 @foreach($itemChild->getEnableWhen() as $enableWhen)
                     @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
                 @endforeach
             </div>
         @endforeach
-        @php
-            Log::debug(json_encode($typeQuestionnaireArray));
-        @endphp
     </div>
 </div>
 

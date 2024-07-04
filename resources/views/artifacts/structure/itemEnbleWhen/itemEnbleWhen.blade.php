@@ -11,7 +11,7 @@
     }
     
     $answerBoolean = $enableWhen->getAnswerBoolean();
-    $answerCoding = $enableWhen->getAnswerCoding() ? $enableWhen->getAnswerCoding()->getCode() : null;;
+    $answerCoding = $enableWhen->getAnswerCoding() ? $enableWhen->getAnswerCoding()->getCode() : null;
     $answerDate = $enableWhen->getAnswerDate();
     $answerDateTime = $enableWhen->getAnswerDateTime();
     $answerDecimal = $enableWhen->getAnswerDecimal();
@@ -44,6 +44,12 @@ $(document).ready(function(){
             console.log("{{ $question }} changed");
             var value = $(this).val(); // Get the value of the changed element
             console.log("Value: " + value);
+
+            if (value.includes('code:')) {
+                const pattern = /code:([^ ]+)/;
+                const code = value.match(pattern)[1];
+                value = code;
+            }
             
             if (eval("'" + value + "'" + '{{$operator}}' + "'" + '{{ $answer }}' + "'")) {
                 $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();

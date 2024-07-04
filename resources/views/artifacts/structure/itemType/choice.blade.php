@@ -1,19 +1,21 @@
 @php
-    $initialValue = ""; // Initialize $initialValue
+use Illuminate\Support\Facades\Log;
+
+$initialValue = ""; // Initialize $initialValue
 
 foreach($item->getInitial() as $initial){
-        $initialBoolean = $initial->getValueBoolean();
-        $initialCoding = $initial->getValueCoding() ? $initial->getValueCoding()->getCode() : null;
-        $initialDate = $initial->getValueDate();
-        $initialDateTime = $initial->getValueDateTime();
-        $initialDecimal = $initial->getValueDecimal();
-        $initialInteger = $initial->getValueInteger();
-        $initialQuantity = $initial->getValueQuantity();
-        $initialReference = $initial->getValueReference();
-        $initialStringValue = $initial->getValueString();
-        $initialTime = $initial->getValueTime();
-        
-        $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
+    $initialBoolean = $initial->getValueBoolean();
+    $initialCoding = $initial->getValueCoding() ? $initial->getValueCoding()->getCode() : null;
+    $initialDate = $initial->getValueDate();
+    $initialDateTime = $initial->getValueDateTime();
+    $initialDecimal = $initial->getValueDecimal();
+    $initialInteger = $initial->getValueInteger();
+    $initialQuantity = $initial->getValueQuantity();
+    $initialReference = $initial->getValueReference();
+    $initialStringValue = $initial->getValueString();
+    $initialTime = $initial->getValueTime();
+    
+    $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
 }
 
 @endphp
@@ -40,18 +42,22 @@ foreach($item->getInitial() as $initial){
 @else
     <select class="form-select" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}">
         <option value="" disabled selected>Select an option</option>
-        @foreach($item->getAnswerOption() as $answerOption)
-            @if($answerOption->getExtension() != null)
-                @foreach($answerOption->getExtension() as $extension)
-                    <option value="{{ $extension->getValueString() }}">
-                        {{ $extension->getValueString() }}
-                    </option>
+                @foreach($item->getAnswerOption() as $answerOption)
+                    @if($answerOption->getExtension() != null)
+                        @foreach($answerOption->getExtension() as $extension)
+                            <option value="{{ $extension->getValueString() }}">
+                                {{ $extension->getValueString() }}
+                            </option>
+                        @endforeach
+                    @else
+                        <option value="code:{{ $answerOption->getValueCoding()->getCode() }} display:{{ $answerOption->getValueCoding()->getDisplay() }} system:{{ $answerOption->getValueCoding()->getSystem() }}">
+                            @if($answerOption->getValueCoding()->getDisplay() == null)
+                                {{ $answerOption->getValueCoding()->getCode() }}
+                            @else
+                                 {{ $answerOption->getValueCoding()->getDisplay() }}
+                            @endif
+                        </option>
+                    @endif
                 @endforeach
-            @else
-                <option value="{{ $answerOption->getValueCoding()->getCode() }}">
-                    {{ $answerOption->getValueCoding()->getDisplay() }}
-                </option>
-            @endif
-        @endforeach
     </select>
 @endif
