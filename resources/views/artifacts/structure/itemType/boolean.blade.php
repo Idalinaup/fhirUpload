@@ -21,26 +21,38 @@ foreach($item->getInitial() as $initial){
 <div class="row">
     <div class="col-sm-4">
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="true" >
+            <input class="form-check-input i_{{$item->getLinkId()}}" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="true" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
             <label class="form-check-label" for="{{$item->getLinkId()}}">Yes</label>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="false" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+            <input class="form-check-input i_{{$item->getLinkId()}}" type="radio" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="false" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
             <label class="form-check-label" for="{{$item->getLinkId()}}">No</label>
         </div>
-    </div>  
+    </div> 
+    <div class="col-sm-4">
+        <button type="button" id="clearRadio" class="btn btn-secondary btn-sm custom-transparent-button" data-toggle="tooltip" title="Set question as unanswered">Clear</button>
+    </div>
 </div>
 
 
 <script>
-    var radios = document.getElementsByName('{{$item->getLinkId()}}');
-
-    // Add a change event listener to each radio button
-    for (var i = 0; i < radios.length; i++) {
-        radios[i].addEventListener('change', function() {
-            console.log(this.value);
+    document.getElementById('clearRadio').addEventListener('click', function() {
+        document.querySelectorAll('input[type="radio"][name="{{$item->getLinkId()}}"]').forEach(function(radio) {
+            radio.checked = false;
         });
-    }
+    });
 </script>
+
+<style>
+    .custom-transparent-button {
+        background-color: rgba(0, 0, 0, 0.04); /* Cor de fundo preta com 10% de opacidade */
+        color: #000; /* Define a cor do texto do botão */
+        border-color: transparent; /* Faz a borda ser transparente */
+    }
+    .custom-transparent-button:hover {
+        background-color: #6c757d; /* Muda a cor de fundo para cinza no hover */
+        border-color: #6c757d; /* Muda a cor da borda para cinza no hover */
+    }
+</style>

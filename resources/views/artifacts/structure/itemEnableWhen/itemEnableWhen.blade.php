@@ -1,4 +1,5 @@
 @php
+    use Illuminate\Support\Facades\Log;
     $enableBehavior = $itemChild->getEnableBehavior();
     
     $question = $enableWhen->getQuestion();
@@ -22,6 +23,17 @@
     $answerTime = $enableWhen->getAnswerTime();
     
     $answer = $answerBoolean ?? $answerCoding ?? $answerDate ?? $answerDateTime ?? $answerDecimal ?? $answerInteger ?? $answerQuantity ?? $answerReference ?? $answerString ?? $answerTime;
+
+    $enableWhenConditions = $itemChild->getEnableWhen();
+    $enableWhenCount = count($enableWhenConditions);
+    
+    if ($enableWhenCount > 1) {
+    $enableBehavior = $itemChild->getEnableBehavior();
+        if (!$enableBehavior) {
+            throw new Exception('EnableBehavior must be specified when there are multiple enableWhen conditions.');
+        }
+    }
+
 @endphp
 
 
@@ -30,17 +42,8 @@
 <script>
 $(document).ready(function(){
     $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
-
-    @if($operator == "exists")
-        $( "#{{ $question}}" ).on( "change", function() {
-            var value = $(this).val(); // Get the value of the changed element
-
-            if (value) { // This will be true if value is not null, undefined, or an empty string
-                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
-            }
-        });
-    @else
-        $( "#{{ $question}}" ).on( "change", function() {
+    console.log("{{ $operator }}");
+        $( ".i_{{ $question}}" ).on( "change", function() {
             console.log("{{ $question }} changed");
             var value = $(this).val(); // Get the value of the changed element
             console.log("Value: " + value);
@@ -50,14 +53,27 @@ $(document).ready(function(){
                 const code = value.match(pattern)[1];
                 value = code;
             }
-            
-            if (eval("'" + value + "'" + '{{$operator}}' + "'" + '{{ $answer }}' + "'")) {
-                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
-            } else {
-                $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
-            }
+
+            @if($operator == "exists")
+                    if (value && value.trim() !== "") { // Check if the value exists and is not empty
+                        $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
+                    } else {
+                        $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
+                    }
+            @else
+                if (eval("'" + value + "'" + '{{$operator}}' + "'" + '{{ $answer }}' + "'")) {
+                    $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').show();
+                    console.log("Show: ");
+                } else {
+                    $('*[data-linkid="{{ $itemChild->getLinkId() }}"]').hide();
+                    console.log("Hide: ");
+                }
+            @endif
         });
-    @endif
 });
+
+
 </script>
+
+
 @append

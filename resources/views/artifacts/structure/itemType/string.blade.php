@@ -21,9 +21,10 @@ foreach($item->getInitial() as $initial){
 @endphp
 
 <input type="text" 
-       class="form-control" 
+       class="form-control i_{{$item->getLinkId()}}" 
        placeholder="Insert your text here" 
        name="{{ $item->getLinkId() }}" 
        id="{{ $item->getLinkId() }}" 
        value="{{ $initialValue }}" 
+       maxlength="{{ $item->getMaxLength() }}" 
        {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>

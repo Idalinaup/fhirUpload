@@ -81,7 +81,7 @@
                         @include('artifacts.structure.itemType.choice')
                         @break
         
-                    @case('openChoice')
+                    @case('open-choice')
                         @include('artifacts.structure.itemType.openChoice')
                         @break
         
@@ -116,15 +116,15 @@
             </div>
             @endif
         @endforeach
+        @foreach($item->getEnableWhen() as $enableWhen)
+            @include('artifacts.structure.itemEnableWhen.itemEnableWhen', ['item' => $enableWhen, 'itemChild'=>$item] ) 
+        @endforeach
     </div>
 
     <div class="questionnaire-item-sub" >
         @foreach($item->getItem() as $itemChild)
             <div class="questionnaire-item">
                 @include('artifacts.structure.item', ['item' => $itemChild])
-                @foreach($itemChild->getEnableWhen() as $enableWhen)
-                    @include('artifacts.structure.itemEnbleWhen.itemEnbleWhen', ['item' => $enableWhen] ) 
-                @endforeach
             </div>
         @endforeach
     </div>

@@ -21,4 +21,4 @@ foreach($item->getInitial() as $initial){
 @endphp
 
 
-<input type="time" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true")?"disabled":"" }}>
+<input type="time" class="i_{{$item->getLinkId()}}" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true")?"disabled":"" }}>

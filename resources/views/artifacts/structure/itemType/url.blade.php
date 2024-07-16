@@ -20,4 +20,12 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
-    <input type="url" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" placeholder="https://www.example.com" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true")?"disabled":"" }}> 
+    <input type="url" 
+       class="form-control i_{{$item->getLinkId()}}" 
+       placeholder="Insert your URL here" 
+       name="{{ $item->getLinkId() }}" 
+       id="{{ $item->getLinkId() }}" 
+       value="{{ $initialValue }}" 
+       maxlength="{{ $item->getMaxLength() }}" 
+       {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}
+    >

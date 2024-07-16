@@ -16,17 +16,34 @@ foreach($item->getInitial() as $initial){
         $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
 }
 
+
+$minValue = null;
+$maxValue = null;
+
+foreach ($item->getExtension() as $extension) {
+    if ($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/minValue') {
+        $minValue = $extension->getValueDecimal();
+    } elseif ($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/maxValue') {
+        $maxValue = $extension->getValueDecimal();
+    }
+}
+
 @endphp
 
 <div class="form-group">
     <input type="number" 
-           class="form-control" 
+           class="form-control i_{{$item->getLinkId()}}" 
            placeholder="Enter your number here" 
            name="{{ $item->getLinkId() }}" 
            id="{{ $item->getLinkId() }}" 
            value="{{ $initialValue }}"
-           min="{{ $item->getExtensionValue('http://hl7.org/fhir/StructureDefinition/minValue') }}"
-           max="{{ $item->getExtensionValue('http://hl7.org/fhir/StructureDefinition/maxValue') }}"
+            @if (!is_null($minValue))
+                min="{{ $minValue }}"
+            @endif
+            @if (!is_null($maxValue))
+                max="{{ $maxValue }}"
+            @endif
+            maxlength="{{ $item->getMaxLength() }}" 
            {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
 </div>
 

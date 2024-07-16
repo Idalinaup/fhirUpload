@@ -20,10 +20,11 @@ foreach($item->getInitial() as $initial){
 
 <div class="form-group">
     <input type="number" 
-           class="form-control" 
+           class="form-control i_{{$item->getLinkId()}}" 
            placeholder="Enter your number here" 
            name="{{ $item->getLinkId() }}" 
            id="{{ $item->getLinkId() }}" 
            value="{{ $initialValue }}" 
+           maxlength="{{ $item->getMaxLength() }}" 
            {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
 </div>

@@ -18,4 +18,4 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
-<input type="datetime-local" class="form-control" name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+<input type="datetime-local" class="form-control i_{{$item->getLinkId()}}" name="{{$item->getLinkId()}} i_{{$item->getLinkId()}}" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>

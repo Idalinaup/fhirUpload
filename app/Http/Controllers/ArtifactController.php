@@ -267,6 +267,31 @@ class ArtifactController extends Controller
                     $answerItem->setValueUri(new FHIRUri($answer));
                     break;
                 case 'attachment':
+                    $contentType = trim(substr($answer, $contentTypeStart = strpos($answer, 'contentType:') + strlen('contentType:'), strpos($answer, 'language:') - $contentTypeStart));
+                        $language = trim(substr($answer, $languageStart = strpos($answer, 'language:') + strlen('language:'), strpos($answer, 'data:') - $languageStart));
+                        $data = trim(substr($answer, $dataStart = strpos($answer, 'data:') + strlen('data:'), strpos($answer, 'url:') - $dataStart));
+                        $url = trim(substr($answer, $urlStart = strpos($answer, 'url:') + strlen('url:'), strpos($answer, 'size:') - $urlStart));
+                        $size = trim(substr($answer, $sizeStart = strpos($answer, 'size:') + strlen('size:'), strpos($answer, 'hash:') - $sizeStart));
+                        $hash = trim(substr($answer, $hashStart = strpos($answer, 'hash:') + strlen('hash:'), strpos($answer, 'title:') - $hashStart));
+                        $title = trim(substr($answer, $titleStart = strpos($answer, 'title:') + strlen('title:'), strpos($answer, 'creation:') - $titleStart));
+                        $creation = trim(substr($answer, $creationStart = strpos($answer, 'creation:') + strlen('creation:')));
+                    
+                    $attachmentArray = [
+                        'contentType' => $answer['contentType'] ?? null, // Replace null with default or calculated value if necessary
+                        'language' => $answer['language'] ?? null,
+                        'data' => $answer['data'] ?? null,
+                        'url' => $answer['url'] ?? null,
+                        'size' => $answer['size'] ?? null,
+                        'hash' => $answer['hash'] ?? null,
+                        'title' => $answer['title'] ?? null,
+                        'creation' => $answer['creation'] ?? null,
+                    ];
+                
+                    // Assuming $answer is structured in a way that these fields can be directly accessed
+                    // If $answer does not directly contain these fields, you may need to extract or calculate them differently
+                
+                    $answerItem->setValueAttachment(new FHIRAttachment($attachmentArray));;
+
                     $answerItem->setValueAttachment(new FHIRAttachment($answer));
                     break;
                 case 'reference':
@@ -276,9 +301,10 @@ class ArtifactController extends Controller
                     //dd($itemQuestionnaire);
                     $answerData = [
                         'value' => (is_array($answer)?$answer[0]:$answer), // assuming $answer is a numeric value
-                        'unit' => (is_array($answer)?$answer[1]:""),   
-                        // 'system' => 'system', replace 'system' with the actual system
-                        //'code' => 'code', // replace 'code' with the actual code
+                        //'unit' => (is_array($answer)?$answer[1]:""), 
+                        //'system' => (is_array($answer)?$answer[2]:""),
+                       // 'code' => (is_array($answer)?$answer[3]:""),
+                        
                     ];
                     $answerItem->setValueQuantity(new FHIRQuantity($answerData));
                     break;
