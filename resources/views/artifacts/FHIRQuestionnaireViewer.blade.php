@@ -1,8 +1,6 @@
 @php
-    //dd($objectQuestionnaire->getItem());
-    // Supondo que $questionnaire seja uma instância de Questionnaire e $answers seja um array de respostas
     use Illuminate\Support\Facades\Log;
-    //$typeQuestionnaireArray = [];
+    $extensionCount = 0;
 @endphp
 
 <!DOCTYPE html>
@@ -17,6 +15,7 @@
 </head>
 
 <body>
+    
     <form action="{{ route('artifacts.response') }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="Id" id="Id" value="{{ $objectQuestionnaire->getId() }}">
         <input type="hidden" name="objectQuestionnaire" id="objectQuestionnaire" value="{{ $objectQuestionnaire}}">
@@ -26,33 +25,70 @@
         //Log::debug($objectQuestionnaire);
         @endphp
 
-        <br>
-        <div class="questionnaire-info">
-            <p>
-                The following Questionnaire was loaded from:  {{$objectQuestionnaire->getId()}}
-            </p>
-        </div>
+<br>
 
-        <div>
-            @foreach($objectQuestionnaire->getItem() as $item)
+
+<div class="questionnaire-info row">
+    <div class="col-11">
+        @if($objectQuestionnaire != "Questionnaire")
+        <p>
+            <span style="position: relative; display: inline-block; font-size: 17px;">
+                <svg style="color:rgb(255, 19, 11); vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 
+                    1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 
+                    0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                </svg>
+                O recurso carregado não é um Questionnaire, mas sim um: {{$objectQuestionnaire}}.
+            </span>
+        </p>
+        @else
+        <p>
+            The following Questionnaire was loaded from: {{$objectQuestionnaire}}
+            <br>
+        </p>
+    </div>
+
+
+
+    @foreach($objectQuestionnaire->getItem() as $item)
+        @if($item->getExtension())
             @php
-            //   $type = $item->getType()->getValue();
-            //   log::debug(json_encode($type));
+                $extensionCount++;
             @endphp
-
-                <div class="questionnaire-item">
-                    @include('artifacts.structure.item')
-                </div>
-
-            @endforeach
+        @endif
+    @endforeach
+    @if($extensionCount > 0)
+        <div class="col-md-1 text-right " >
+            <button  class="lf-help-button btn btn-sm" style="color:rgb(255, 19, 11)" >
+                <span class="tooltiptextp">
+                    Atenção: Pode haver uma extensão que ainda foi não implementada</span> 
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                    <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 
+                    1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 
+                    0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+                </svg>
+            </button>
         </div>
+    @endif
+</div>
 
-        @yield('form_script')
-        <br>  
-        @csrf
-        <button id="submit-button" type="submit" class="btn btn-success" >SUBMIT</button>
+
+
+<div>
+    @foreach($objectQuestionnaire->getItem() as $item)
+        <div class="questionnaire-item">
+            @include('artifacts.structure.item')
+        </div>            
+    @endforeach
+</div>
+
+@yield('form_script')
+<br>  
+@csrf
+<button id="submit-button" type="submit" class="btn btn-success">SUBMIT</button>
     </form>
 </body>
+@endif
 
 </html>
 
@@ -74,3 +110,30 @@
         });
     });
 </script>
+
+
+<style>
+.tooltiptextp {
+    width: 120px;
+  bottom: 120%;
+  left: 80%;
+  margin-left: -150px; 
+  visibility: hidden;
+  width: 210px;
+  background-color: rgba(255, 58, 58, 0.5);
+  color: #000000;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+
+
+.lf-help-button:hover .tooltiptextp {
+    visibility: visible;
+}
+</style>

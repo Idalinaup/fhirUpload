@@ -27,13 +27,7 @@
     $enableWhenConditions = $itemChild->getEnableWhen();
     $enableWhenCount = count($enableWhenConditions);
     
-    if ($enableWhenCount > 1) {
-    $enableBehavior = $itemChild->getEnableBehavior();
-        if (!$enableBehavior) {
-            throw new Exception('EnableBehavior must be specified when there are multiple enableWhen conditions.');
-        }
-    }
-
+    
 @endphp
 
 

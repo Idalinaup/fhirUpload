@@ -52,7 +52,7 @@
                 </select>
             </div>
             <div style="display: flex; align-items: center; margin-top: 10px;">
-            <button type="button" class="btn btn-success" id="gerarFormulario">Gerar Formulário Json</button>
+            <button type="button" class="btn btn-success" id="gerarFormulario">JSON Formato</button>
             <!-- <button type="button" class="btn btn-danger" onclick="confirmRemoveSelected()">Apagar</button> -->
         </form>
 

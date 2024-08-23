@@ -32,7 +32,7 @@ foreach($item->getInitial() as $initial){
         </div>
     </div> 
     <div class="col-sm-4">
-        <button type="button" id="clearRadio" class="btn btn-secondary btn-sm custom-transparent-button" data-toggle="tooltip" title="Set question as unanswered">Clear</button>
+        <button type="button" id="clearRadio" class="btn btn-secondary btn-sm custom-transparent-button" data-toggle="tooltip" title="Set question as unanswered">clean</button>
     </div>
 </div>
 

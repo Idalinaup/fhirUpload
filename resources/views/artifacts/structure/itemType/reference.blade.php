@@ -22,7 +22,7 @@ foreach($item->getInitial() as $initial){
 
 <input type="text" 
        class="form-control i_{{$item->getLinkId()}}" 
-       placeholder="Insert your text here" 
+       placeholder="Insira o texto aqui" 
        name="{{ $item->getLinkId() }}" 
        id="{{ $item->getLinkId() }}" 
        value="{{ $initialValue }}" 

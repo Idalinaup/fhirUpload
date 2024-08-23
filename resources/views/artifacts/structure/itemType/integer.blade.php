@@ -1,4 +1,5 @@
 @php
+    use Illuminate\Support\Facades\Log;
     $initialValue = ""; // Initialize $initialValue
 
 foreach($item->getInitial() as $initial){
@@ -18,13 +19,35 @@ foreach($item->getInitial() as $initial){
 
 @endphp
 
+@if($item->getExtension())
+    @foreach($item->getExtension() as $extension)
+        @if($extension->getUrl() == 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' )
+            @php
+            $expression = $extension->getValueExpression()->getExpression();
+            Log::debug($expression);
+            @endphp
+
+            <div class="form-group">
+                <input type="number" 
+                    class="form-control i_{{$item->getLinkId()}}" 
+                    placeholder="{{$expression}}"
+                    name="{{ $item->getLinkId() }}" 
+                    id="{{ $item->getLinkId() }}" 
+                    value="{{ $initialValue }}" 
+                    maxlength="{{ $item->getMaxLength() }}" 
+                    {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
+            </div>
+        @endif
+    @endforeach
+@else
 <div class="form-group">
     <input type="number" 
-           class="form-control i_{{$item->getLinkId()}}" 
-           placeholder="Enter your number here" 
-           name="{{ $item->getLinkId() }}" 
-           id="{{ $item->getLinkId() }}" 
-           value="{{ $initialValue }}" 
-           maxlength="{{ $item->getMaxLength() }}" 
-           {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
-</div>
+        class="form-control i_{{$item->getLinkId()}}" 
+        placeholder="Introduza o número aqui" 
+        name="{{ $item->getLinkId() }}" 
+        id="{{ $item->getLinkId() }}" 
+        value="{{ $initialValue }}" 
+        maxlength="{{ $item->getMaxLength() }}" 
+        {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
+    </div>
+@endif

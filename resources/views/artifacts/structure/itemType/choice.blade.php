@@ -18,6 +18,19 @@ foreach($item->getInitial() as $initial){
     $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
 }
 
+$answerOptions = $item->getAnswerOption(); // Supondo que getAnswerOption() retorna um array
+
+$answerArrays = []; // Array para armazenar todas as opções de resposta
+
+
+foreach ($answerOptions as $answerOption) {
+    $answerArray = [
+        'code' => $answerOption->getValueCoding()->getCode(),
+        'system' => $answerOption->getValueCoding()->getSystem(),
+        'display' => $answerOption->getValueCoding()->getDisplay()
+    ];
+    Log::info('Answer Array:', $answerArray); // Adiciona log de informação para cada iteração
+}
 @endphp
 
 @if($item->getRepeats() == "true")
@@ -25,34 +38,34 @@ foreach($item->getInitial() as $initial){
         <div class="form-check">
             @if($answerOption->getValueString() != null)
                 <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueString() }}">
-                    <option value="{{ $answerOption->getValueString()  }}">
+                    <label value="{{ $answerOption->getValueString()  }}">
                         {{ $answerOption->getValueString() }}
-                    </option>
+                    </label>
             @elseif($answerOption->getValueInteger() != null)
                 <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueInteger() }}">
-                    <option value="{{ $answerOption->getValueInteger()  }}">
+                    <label value="{{ $answerOption->getValueInteger()  }}">
                         {{ $answerOption->getValueInteger() }}
-                    </option>
+                    </label>
             @elseif($answerOption->getValueDate() != null)
                 <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueDate() }}">
-                    <option value="{{ $answerOption->getValueDate()  }}">
+                    <label value="{{ $answerOption->getValueDate()  }}">
                         {{ $answerOption->getValueDate() }}
-                    </option>
+                    </label>
             @elseif($answerOption->getValueTime() != null)
                 <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueTime() }}">
-                    <option value="{{ $answerOption->getValueTime()  }}">
+                    <label value="{{ $answerOption->getValueTime()  }}">
                         {{ $answerOption->getValueTime() }}
-                    </option>
+                    </label>
             @elseif($answerOption->getValueCoding() != null)
-                <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" id="{{$item->getLinkId()}}" name="{{$item->getLinkId()}}[]" value="{{ $answerOption->getValueCoding()->getCode() }}">
+                <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" id="{{$item->getLinkId()}}[]" name="{{$item->getLinkId()}}[]" value="{{ json_encode($answerOption->getValueCoding()) }}">
                     <label class="form-check-label" for="{{$item->getLinkId()}}">
                         {{ $answerOption->getValueCoding()->getDisplay() }}
                     </label>
             @elseif($answerOption->getValueReference() != null)
                 <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $answerOption->getValueReference() }}">
-                    <option value="{{ $answerOption->getValueReference()  }}">
+                    <label value="{{ $answerOption->getValueReference()  }}">
                         {{ $answerOption->getValueReference() }}
-                    </option>
+                    </label>
             @elseif($answerOption->getExtension() != null)
                     @foreach($answerOption->getExtension() as $extension)
                         <input class="form-check-input i_{{$item->getLinkId()}}" type="checkbox" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $extension->getValueString() }}">
@@ -65,7 +78,7 @@ foreach($item->getInitial() as $initial){
     @endforeach
 @else
 <select class="form-select i_{{$item->getLinkId()}}"  name="{{$item->getLinkId()}}" id="{{$item->getLinkId()}}">
-    <option value="" disabled selected>Select an option</option>
+    <option value="" disabled selected>Selecione uma opção</option>
     @foreach($item->getAnswerOption() as $answerOption)
         @if($answerOption->getValueString() != null)
             <option value="{{ $answerOption->getValueString() }}" {{ $answerOption->getInitialSelected() ? 'selected' : '' }}>
