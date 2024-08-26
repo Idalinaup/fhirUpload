@@ -26,6 +26,14 @@
 
     $enableWhenConditions = $itemChild->getEnableWhen();
     $enableWhenCount = count($enableWhenConditions);
+
+    $isEnabled = false;
+
+    if ($enableBehavior === 'all') {
+        $isEnabled = collect($enableWhen)->every(fn($item) => $item['value']);
+    } elseif ($enableBehavior === 'any') {
+        $isEnabled = collect($enableWhen)->contains(fn($item) => $item['value']);
+    }
     
     
 @endphp

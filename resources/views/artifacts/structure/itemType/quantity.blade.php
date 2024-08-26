@@ -19,5 +19,11 @@ foreach($item->getInitial() as $initial){
 @endphp
 
 <div class="form-group">
-    <input type="number" class="form-control i_{{$item->getLinkId()}}" placeholder="Introduza o número aqui" name="{{$item->getLinkId()}}[]" id="{{$item->getLinkId()}}" value="{{ $initialValue }}" {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
+    <input type="number" 
+    class="form-control i_{{$item->getLinkId()}}" 
+    placeholder="Introduza o número aqui" 
+    name="{{$item->getLinkId()}}[]" 
+    id="{{$item->getLinkId()}}" 
+    value="{{ $initialValue }}" 
+    {{ ($item->getreadOnly() == "true") ? "disabled" : "" }}>
 </div>

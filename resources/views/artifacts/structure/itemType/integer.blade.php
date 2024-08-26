@@ -11,10 +11,10 @@ foreach($item->getInitial() as $initial){
         $initialInteger = $initial->getValueInteger();
         $initialQuantity = $initial->getValueQuantity();
         $initialReference = $initial->getValueReference();
-        $initialStringValue = $initial->getValueString();
+        $initialString = $initial->getValueString();
         $initialTime = $initial->getValueTime();
         
-        $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
+        $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialString ?? $initialTime;
 }
 
 @endphp
@@ -24,7 +24,7 @@ foreach($item->getInitial() as $initial){
         @if($extension->getUrl() == 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression' )
             @php
             $expression = $extension->getValueExpression()->getExpression();
-            Log::debug($expression);
+            //Log::debug($expression);
             @endphp
 
             <div class="form-group">

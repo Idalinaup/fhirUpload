@@ -33,7 +33,8 @@
         @if($objectQuestionnaire != "Questionnaire")
         <p>
             <span style="position: relative; display: inline-block; font-size: 17px;">
-                <svg style="color:rgb(255, 19, 11); vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                <svg style="color:rgb(255, 19, 11); vertical-align: middle;" xmlns="http://www.w3.org/2000/svg" 
+                width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
                     <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 
                     1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 
                     0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5m.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
@@ -43,8 +44,13 @@
         </p>
         @else
         <p>
-            The following Questionnaire was loaded from: {{$objectQuestionnaire}}
-            <br>
+            The following Questionnaire was loaded from: "Dispaly ID"
+        <p>
+        </p>
+            The status of the Questionnaire is:
+            <span class="badge bg-success" title="This resource is ready for normal use.">
+                {{$objectQuestionnaire->getstatus()->getValue()}}
+            </span>
         </p>
     </div>
 
@@ -61,7 +67,7 @@
         <div class="col-md-1 text-right " >
             <button  class="lf-help-button btn btn-sm" style="color:rgb(255, 19, 11)" >
                 <span class="tooltiptextp">
-                    Atenção: Pode haver uma extensão que ainda foi não implementada</span> 
+                    Attention: There may be an extension that has not yet been implemented</span> 
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
                     <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 
                     1.767h13.713c.889 0 1.438-.99.98-1.767zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 
@@ -129,6 +135,10 @@
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
+}
+
+.transparent-badge {
+    opacity: 0.1;
 }
 
 
