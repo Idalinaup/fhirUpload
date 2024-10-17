@@ -1,6 +1,24 @@
 @php
     use Illuminate\Support\Facades\Log;
     $extensionCount = 0;
+
+    if($objectQuestionnaire == "Questionnaire")
+    {
+        function checkExtensions($items) {
+            $count = 0;
+            foreach ($items as $item) {
+                if ($item->getExtension()) {
+                    $count++;
+                }
+                if ($item->getItem()) {
+                    $count += checkExtensions($item->getItem());
+                }
+            }
+            return $count;
+        }
+
+        $extensionCount = checkExtensions($objectQuestionnaire->getItem());
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -22,7 +40,7 @@
         <input type="hidden" name="status" id="status" value="{{ $objectQuestionnaire->getstatus() }}">
         <input type="hidden" name="selectedArtifact" id="selectedArtifact" value="{{$selectedArtifactName}}">
         @php
-        //Log::debug($objectQuestionnaire);
+        Log::debug($objectQuestionnaire);
         @endphp
 
 <br>
@@ -44,7 +62,7 @@
         </p>
         @else
         <p>
-            The following Questionnaire was loaded from: "Dispaly ID"
+            The following Questionnaire was loaded from: {{$objectQuestionnaire->getId()}}.
         <p>
         </p>
             The status of the Questionnaire is:
@@ -56,13 +74,7 @@
 
 
 
-    @foreach($objectQuestionnaire->getItem() as $item)
-        @if($item->getExtension())
-            @php
-                $extensionCount++;
-            @endphp
-        @endif
-    @endforeach
+
     @if($extensionCount > 0)
         <div class="col-md-1 text-right " >
             <button  class="lf-help-button btn btn-sm" style="color:rgb(255, 19, 11)" >

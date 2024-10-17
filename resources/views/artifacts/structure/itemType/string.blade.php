@@ -16,7 +16,7 @@ foreach($item->getInitial() as $initial){
         $initialTime = $initial->getValueTime();
         
         $initialValue = $initialBoolean ?? $initialCoding ?? $initialDate ?? $initialDateTime ?? $initialDecimal ?? $initialInteger ?? $initialQuantity ?? $initialReference ?? $initialStringValue ?? $initialTime;
-        log::debug($initialValue);
+        //log::debug($initialValue);
     }
 }
 

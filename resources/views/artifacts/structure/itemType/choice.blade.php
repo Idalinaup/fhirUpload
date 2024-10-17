@@ -22,15 +22,19 @@ $answerOptions = $item->getAnswerOption(); // Supondo que getAnswerOption() reto
 
 $answerArrays = []; // Array para armazenar todas as opções de resposta
 
-
-foreach ($answerOptions as $answerOption)
-    if ($answerOption->getValueCoding() != null)
-            $answerArray = [
-                'code' => $answerOption->getValueCoding()->getCode(),
-                'system' => $answerOption->getValueCoding()->getSystem(),
-                'display' => $answerOption->getValueCoding()->getDisplay()
-            ];
+foreach ($answerOptions as $answerOption) {
+    if ($answerOption->getValueCoding() != null) {
+        $answerArray = [
+            'code' => $answerOption->getValueCoding()->getCode(),
+            'system' => $answerOption->getValueCoding()->getSystem(),
+            'display' => $answerOption->getValueCoding()->getDisplay()
+        ];
+        //Log::info($answerArray);
+        //$answerArrays[] = $answerArray; // Store the answer array
+    }
+}
 @endphp
+
 
 @if($item->getRepeats() == "true")
     @foreach($item->getAnswerOption() as $answerOption)
@@ -96,7 +100,7 @@ foreach ($answerOptions as $answerOption)
                     {{ $answerOption->getValueTime() }}
                 </option>
             @elseif($answerOption->getValueCoding() != null)
-                <option value="{{ $answerOption->getValueCoding()->getCode() }}" {{ $answerOption->getInitialSelected() ? 'selected' : '' }}>
+                <option value="{{ json_encode($answerOption->getValueCoding()) }}" {{ $answerOption->getInitialSelected() ? 'selected' : '' }}>
                     @if($answerOption->getValueCoding()->getDisplay() != null)
                         {{ $answerOption->getValueCoding()->getDisplay() }}
                     @else

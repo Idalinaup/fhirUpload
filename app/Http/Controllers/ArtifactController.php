@@ -95,9 +95,10 @@ class ArtifactController extends Controller
 
 
         $content = file_get_contents($filePath);
-        log::debug($content);
+        //log::debug($content);
 
         $objectQuestionnaire = $parser->parse($content);
+
 
         //log::debug($objectQuestionnaire);
 
