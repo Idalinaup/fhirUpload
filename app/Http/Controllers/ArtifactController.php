@@ -300,6 +300,8 @@ class ArtifactController extends Controller
                 $answerItem->setValueTime(new FHIRTime($answer));
                 break;
             case 'string':
+                $answerItem->setValueString(new FHIRString($answer));
+                break;
             case 'text':
                 $answerItem->setValueString(new FHIRString($answer));
                 break;

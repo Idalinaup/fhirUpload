@@ -1,156 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-
     <title>Compilador FHIR</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-
 <body class="container mt-5">
-
     <div class="row">
-        <!-- Coluna 1 -->
+        <!-- Column 1 -->
         <div class="col-md-6">
-        <h1 class="mb-4">Compilador FHIR</h1>
+            <h1 class="mb-4">Compilador FHIR</h1>
 
-        @if(session('success'))
-            <div id="flash-message" class="alert alert-success">{{ session('success') }}</div>
-        @endif
+            <!-- Success/Error Messages -->
+            @if(session('success'))
+                <div id="flash-message" class="alert alert-success">{{ session('success') }}</div>
+            @endif
+            @if(session('error'))
+                <div id="flash-message" class="alert alert-danger">{{ session('error') }}</div>
+            @endif
 
-        @if(session('error'))
-            <div id="flash-message" class="alert alert-danger">{{ session('error') }}</div>
-        @endif
+            <!-- File Upload Form -->
+            <form action="{{ route('artifacts.upload') }}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label for="file" class="form-label">Selecione o template FHIR em Formato .json:</label>
+                    <input class="form-control" type="file" name="file" id="file">
+                </div>
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </form>
 
-        <form action="{{ route('artifacts.upload') }}" method="post" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label for="file" class="form-label">Selecione o template FHIR em Formato .json:</label>
-                <input class="form-control" type="file" name="file" id="file" >
-            </div>
-            <button type="submit" class="btn btn-primary">Enviar</button>
-        </form>
+            <hr>
 
-        <hr>
+            <!-- Artifact Selection Form -->
+            <h2 class="mb-3">Arquivos existentes:</h2>
+            <form id="generateForm" action="{{ route('artifacts.generate') }}" method="post">
+                @csrf
+                <div class="mb-3">
+                    <label for="selectedArtifact" class="form-label">Seleciona o arquivo disponível:</label>
+                    <select multiple class="form-control" name="selectedArtifact" id="selectedArtifact">
+                        @foreach($artifacts as $artifact)
+                            <option value="{{ $artifact }}">{{ basename($artifact) }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <h2 class="mb-3">Arquivos existentes:</h2>
-        <form action="{{ route('artifacts.generate') }}" method="post" >
-            @csrf
-            <div class="mb-3">
-                <label for="selectedArtifact" class="form-label">Seleciona o arquivo disponível:</label>
-                <select multiple class="form-control" name="selectedArtifact" id="selectedArtifact">
-                    @foreach($artifacts as $artifact)
-                        <option value="{{ $artifact }}">{{ basename($artifact) }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div style="display: flex; align-items: center; margin-top: 10px;">
-            <button type="button" class="btn btn-success" id="gerarFormulario">JSON Formato</button>
-            <!-- <button type="button" class="btn btn-danger" onclick="confirmRemoveSelected()">Apagar</button> -->
-        </form>
-
-        <div style="margin-right: 10px"></div>
-
-        <form action="{{ route('artifacts.generateView') }}" method="post" >
-            @csrf
-            <button type="button" class="btn btn-success" id="gerarFormularioView">Gerar Formulário</button>
-        </form>
-
+                <!-- Buttons for Actions -->
+                <div class="d-flex align-items-center mt-3 gap-2">
+                    <button type="button" class="btn btn-success" id="gerarFormulario">JSON Formato</button>
+                    <button type="button" class="btn btn-success" id="gerarFormularioView">Gerar Formulário</button>
+                </div>
+            </form>
         </div>
 
-    </div>
-    <!-- Coluna 2: Tabs "View" e "JSON" -->
-    <div class="col-md-6">
-        <ul class="nav nav-tabs" id="myTabs">
-            <li class="nav-item">
-                <a class="nav-link active" id="view-tab" data-bs-toggle="tab" href="#view">View</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="json-tab" data-bs-toggle="tab" href="#json">JSON</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane fade show active" id="view">
-                <div class="container" id="viewContent">
+        <!-- Column 2: Tabs "View" and "JSON" -->
+        <div class="col-md-6">
+            <ul class="nav nav-tabs" id="myTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" id="view-tab" data-bs-toggle="tab" href="#view">View</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="json-tab" data-bs-toggle="tab" href="#json">JSON</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="view">
+                    <div class="container" id="viewContent"></div>
                 </div>
-            </div>
-            <div class="tab-pane fade" id="json">
-                <div class="container" id="jsonContent">
+                <div class="tab-pane fade" id="json">
+                    <div class="container" id="jsonContent"></div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Flash Message Timeout Script -->
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $('#flash-message').fadeOut('slow');
+            }, 3000); // 3 seconds
+        });
+    </script>
+
+    <!-- JSON Format Generation Script -->
+    <script>
+        $(document).ready(function() {
+            $('#gerarFormulario').click(function() {
+                $.ajax({
+                    url: '/artifacts/generate',
+                    method: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        selectedArtifact: $('#selectedArtifact').val()
+                    },
+                    success: function(data) {
+                        var fileContent = data.fileContent;
+
+                        // Update JSON content
+                        $('#jsonContent').html(`
+                            <p>Arquivo Selecionado:  ${data.selectedArtifactName}</p>
+                            <pre>${JSON.stringify(fileContent, null, 2)}</pre>
+                        `);
+
+                        // Activate the JSON tab
+                        $('#json-tab').tab('show');  // Switch to JSON tab
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Form Generation Script -->
+    <script>
+        $(document).ready(function() {
+            $('#gerarFormularioView').click(function() {
+                $.ajax({
+                    url: '/artifacts/generate/FHIRQuestionnaire',
+                    method: 'GET',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        selectedArtifact: $('#selectedArtifact').val()
+                    },
+                    success: function(response) {
+                        // Update View content
+                        $('#viewContent').html(response);  
+
+                        // Activate the View tab
+                        $('#view-tab').tab('show');  // Switch to View tab
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
-
-
 </html>
-
-
-<script>
-    $(document).ready(function() {
-        setTimeout(function() {
-            $('#flash-message').fadeOut('slow');
-        }, 3000); // <-- time in milliseconds, 3000ms = 3s
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#gerarFormularioView').click(function() {
-            $.ajax({
-                url: '/artifacts/generate/FHIRQuestionnaire',
-                method: 'GET',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    selectedArtifact: $('#selectedArtifact').val(), 
-                 },
-                 success: function(response) {
-                    var data = response.data;
-
-                    $('#viewContent').html(response);  
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-
-    });
-</script>
-
-
-<script>
-    $(document).ready(function() {
-        $('#gerarFormulario').click(function() {
-            $.ajax({
-                url: '/artifacts/generate',
-                method: 'POST',
-                data: {
-                    _token: $('meta[name="csrf-token"]').attr('content'),
-                    selectedArtifact: $('#selectedArtifact').val(), 
-                 },
-                 success: function(data) {
-                    var fileContent = data.fileContent;
-
-                    $('#jsonContent').html(`
-                        <p>Arquivo Selecionado:  ${data.selectedArtifactName}</p>
-                        <pre>${JSON.stringify(fileContent, null, 2)}</pre>
-                    `);
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
 
 <style>
 .options {

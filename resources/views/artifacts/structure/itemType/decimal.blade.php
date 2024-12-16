@@ -25,20 +25,25 @@
     foreach ($item->getExtension() as $extension) {
         if ($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/minValue') {
             $minValue = $extension->getValueDecimal();
+            //log::info($minValue);
         } elseif ($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/maxValue') {
             $maxValue = $extension->getValueDecimal();
+            //log::info($maxValue);
         }
+            elseif ($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl') {
+                foreach ($extension->getValueCodeableConcept()->getCoding() as $coding) {
+                    if ($coding->getCode() == "slider") {
+                        $isSlider = true;
+                    }
+                }
+            }
     }
 
 
     
 @endphp
 
-@if($item->getExtension())
-    @foreach($item->getExtension() as $extension)
-        @if($extension->getUrl() == 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' && $extension->getValueCodeableConcept() !== null)
-            @foreach($extension->getValueCodeableConcept()->getCoding() as $coding)
-                @if($coding->getCode() == "slider")
+@if(isset($isSlider))
                     @php
                         $DisplayText = $coding->getDisplay(); // Pode ser qualquer combinação de valores entre os delimitadores "#"
 
@@ -65,15 +70,11 @@
                             id="{{ $item->getLinkId() }}">
                         <span>{{ $secondValue}}</span>
                     </div>
-                @endif
-            @endforeach
-        @endif
-    @endforeach
 @else
 <div class="form-group">
     <input type="number" 
            class="form-control i_{{$item->getLinkId()}}" 
-           placeholder="Introduza o número aqui" 
+           placeholder="Enter number here" 
            name="{{ $item->getLinkId() }}" 
            id="{{ $item->getLinkId() }}" 
            value="{{ $initialValue }}"
@@ -85,8 +86,24 @@
            @endif
            maxlength="{{ $item->getMaxLength() }}" 
            {{ $item->getReadOnly() == "true" ? 'disabled' : '' }}>
+           <span class="error-message" id="error-{{$item->getLinkId()}}" style="color: red; display: none;">
+            O valor não pode ser superior a {{ $maxValue }}.
+        </span>
 </div>
 @endif
+
+<script>
+function validateInput(input, maxValue) {
+    const errorMessage = document.getElementById(`error-${input.id}`);
+    if (parseFloat(input.value) > maxValue) {
+        errorMessage.style.display = 'inline';
+    } else {
+        errorMessage.style.display = 'none';
+    }
+}
+</script>
+
+
 
 
 <style>

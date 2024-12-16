@@ -43,7 +43,7 @@ foreach($item->getInitial() as $initial){
 <div class="form-group">
     <input type="number" 
         class="form-control i_{{$item->getLinkId()}}" 
-        placeholder="Introduza o número aqui" 
+        placeholder="Enter number here" 
         name="{{ $item->getLinkId() }}" 
         id="{{ $item->getLinkId() }}" 
         value="{{ $initialValue }}" 
