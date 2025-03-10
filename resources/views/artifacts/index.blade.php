@@ -4,7 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="asset-path" content="{{ asset('') }}">
+    <link id="themeStyle" rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script src="{{ asset('js/change.js')}}"></script>
+
+
     <title>Compilador FHIR</title>
+
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -17,7 +23,6 @@
         <div class="col-md-6">
             <h1 class="mb-4">Compilador FHIR</h1>
 
-            <!-- Success/Error Messages -->
             @if(session('success'))
                 <div id="flash-message" class="alert alert-success">{{ session('success') }}</div>
             @endif
@@ -57,9 +62,19 @@
                 </div>
             </form>
         </div>
-
+   
         <!-- Column 2: Tabs "View" and "JSON" -->
         <div class="col-md-6">
+            <div class="d-flex justify-content-end mt-3 gap-2">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="mudarCSS('css/style.css')">
+                    Aplicar 1º style
+                </button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="mudarCSS('css/style_1.css')">
+                    Aplicar 2º style
+                </button>                
+            </div>
+                     
+
             <ul class="nav nav-tabs" id="myTabs">
                 <li class="nav-item">
                     <a class="nav-link active" id="view-tab" data-bs-toggle="tab" href="#view">View</a>
@@ -147,12 +162,6 @@
 </body>
 </html>
 
-<style>
-.options {
-    display: flex;
-    gap: 10px;
-}
-</style>
 
 
 

@@ -89,7 +89,3 @@ body {
 .lf-help-button:hover .tooltiptext {
     visibility: visible;
 }
-
-.button-help {
-    color: rgb(0, 134, 143);
-}

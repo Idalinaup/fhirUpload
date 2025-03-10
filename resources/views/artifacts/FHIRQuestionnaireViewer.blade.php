@@ -1,50 +1,45 @@
-@php
-    use Illuminate\Support\Facades\Log;
-    $extensionCount = 0;
-
-    if($objectQuestionnaire == "Questionnaire")
-    {
-        function checkExtensions($items) {
-            $count = 0;
-            foreach ($items as $item) {
-                if ($item->getExtension()) {
-                    $count++;
-                }
-                if ($item->getItem()) {
-                    $count += checkExtensions($item->getItem());
-                }
-            }
-            return $count;
-        }
-
-        $extensionCount = checkExtensions($objectQuestionnaire->getItem());
-    }
-@endphp
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <meta name="asset-path" content="{{ asset('') }}">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
 
+@php
+use Illuminate\Support\Facades\Log;
+$extensionCount = 0;
+
+if($objectQuestionnaire == "Questionnaire")
+{
+    function checkExtensions($items) {
+        $count = 0;
+        foreach ($items as $item) {
+            if ($item->getExtension()) {
+                $count++;
+            }
+            if ($item->getItem()) {
+                $count += checkExtensions($item->getItem());
+            }
+        }
+        return $count;
+    }
+
+    $extensionCount = checkExtensions($objectQuestionnaire->getItem());
+}
+@endphp
+
 <body>
-    
     <form action="{{ route('artifacts.response') }}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="Id" id="Id" value="{{ $objectQuestionnaire->getId() }}">
         <input type="hidden" name="objectQuestionnaire" id="objectQuestionnaire" value="{{ $objectQuestionnaire}}">
         <input type="hidden" name="status" id="status" value="{{ $objectQuestionnaire->getstatus() }}">
         <input type="hidden" name="selectedArtifact" id="selectedArtifact" value="{{$selectedArtifactName}}">
-        @php
-        Log::debug($objectQuestionnaire);
-        @endphp
-
 <br>
-
 
 <div class="questionnaire-info row">
     <div class="col-11">
@@ -72,11 +67,8 @@
         </p>
     </div>
 
-
-
-
     @if($extensionCount > 0)
-        <div class="col-md-1 text-right " >
+        <div class="col-md-1 text-right" >
             <button  class="lf-help-button btn btn-sm" style="color:rgb(255, 19, 11)" >
                 <span class="tooltiptextp">
                     Attention: There may be an extension that has not yet been implemented</span> 
@@ -89,8 +81,6 @@
         </div>
     @endif
 </div>
-
-
 
 <div>
     @foreach($objectQuestionnaire->getItem() as $item)
@@ -152,8 +142,6 @@
 .transparent-badge {
     opacity: 0.1;
 }
-
-
 
 .lf-help-button:hover .tooltiptextp {
     visibility: visible;

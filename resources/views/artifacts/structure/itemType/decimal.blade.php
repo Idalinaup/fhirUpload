@@ -44,32 +44,32 @@
 @endphp
 
 @if(isset($isSlider))
-                    @php
-                        $DisplayText = $coding->getDisplay(); // Pode ser qualquer combinação de valores entre os delimitadores "#"
+    @php
+        $DisplayText = $coding->getDisplay(); // Pode ser qualquer combinação de valores entre os delimitadores "#"
 
-                        // Extrair o primeiro valor entre os delimitadores "#"
-                        $firstDelimiterStart = strpos($DisplayText, '#') + 1;
-                        $firstDelimiterEnd = strpos($DisplayText, '#', $firstDelimiterStart);
-                        $firstValue = substr($DisplayText, $firstDelimiterStart, $firstDelimiterEnd - $firstDelimiterStart);
+        // Extrair o primeiro valor entre os delimitadores "#"
+        $firstDelimiterStart = strpos($DisplayText, '#') + 1;
+        $firstDelimiterEnd = strpos($DisplayText, '#', $firstDelimiterStart);
+        $firstValue = substr($DisplayText, $firstDelimiterStart, $firstDelimiterEnd - $firstDelimiterStart);
 
-                        // Extrair o segundo valor entre os delimitadores "#"
-                        $secondDelimiterStart = strpos($DisplayText, '#', $firstDelimiterEnd + 1) + 1;
-                        $secondDelimiterEnd = strpos($DisplayText, '#', $secondDelimiterStart);
-                        $secondValue = substr($DisplayText, $secondDelimiterStart, $secondDelimiterEnd - $secondDelimiterStart);
+        // Extrair o segundo valor entre os delimitadores "#"
+        $secondDelimiterStart = strpos($DisplayText, '#', $firstDelimiterEnd + 1) + 1;
+        $secondDelimiterEnd = strpos($DisplayText, '#', $secondDelimiterStart);
+        $secondValue = substr($DisplayText, $secondDelimiterStart, $secondDelimiterEnd - $secondDelimiterStart);
 
-                    @endphp
-                    <div class="i_{{$item->getLinkId()}}">
-                        <span> {{ $firstValue }}</span>
-                        <input type="range"
-                            name="{{ $item->getLinkId() }}" 
-                            id="{{ $item->getLinkId() }}" 
-                            min="{{ $minValue ?? 0 }}" 
-                            max="{{ $maxValue ?? 100 }}" 
-                            value="{{ $initialValue ?? 50 }}" 
-                            class="slider" 
-                            id="{{ $item->getLinkId() }}">
-                        <span>{{ $secondValue}}</span>
-                    </div>
+    @endphp
+    <div class="i_{{$item->getLinkId()}}">
+        <span> {{ $firstValue }}</span>
+        <input type="range"
+            name="{{ $item->getLinkId() }}" 
+            id="{{ $item->getLinkId() }}" 
+            min="{{ $minValue ?? 0 }}" 
+            max="{{ $maxValue ?? 100 }}" 
+            value="{{ $initialValue ?? 50 }}" 
+            class="slider" 
+            id="{{ $item->getLinkId() }}">
+        <span>{{ $secondValue}}</span>
+    </div>
 @else
 <div class="form-group">
     <input type="number" 

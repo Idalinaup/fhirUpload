@@ -35,7 +35,6 @@
         $isEnabled = collect($enableWhen)->contains(fn($item) => $item['value']);
     }
     
-    
 @endphp
 
 
