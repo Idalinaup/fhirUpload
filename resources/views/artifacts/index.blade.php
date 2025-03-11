@@ -32,6 +32,7 @@
 
             <!-- File Upload Form -->
             <form action="{{ route('artifacts.upload') }}" method="post" enctype="multipart/form-data">
+                @method('post')
                 @csrf
                 <div class="mb-3">
                     <label for="file" class="form-label">Selecione o template FHIR em Formato .json:</label>
@@ -62,7 +63,7 @@
                 </div>
             </form>
         </div>
-   
+
         <!-- Column 2: Tabs "View" and "JSON" -->
         <div class="col-md-6">
             <div class="d-flex justify-content-end mt-3 gap-2">
@@ -71,9 +72,9 @@
                 </button>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="mudarCSS('css/style_1.css')">
                     Aplicar 2º style
-                </button>                
+                </button>
             </div>
-                     
+
 
             <ul class="nav nav-tabs" id="myTabs">
                 <li class="nav-item">
@@ -147,7 +148,7 @@
                     },
                     success: function(response) {
                         // Update View content
-                        $('#viewContent').html(response);  
+                        $('#viewContent').html(response);
 
                         // Activate the View tab
                         $('#view-tab').tab('show');  // Switch to View tab
