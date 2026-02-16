@@ -22,16 +22,23 @@ Route::get('/', function () {
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 use App\Http\Controllers\ArtifactController;
 
-
 Route::get('/artifacts', [ArtifactController::class, 'index'])->name('artifacts.index');
 
+// Upload de novos artefatos FHIR
 Route::post('/artifacts/upload', [ArtifactController::class, 'upload'])->name('artifacts.upload');
 
+// Exibe JSON
 Route::post('/artifacts/generate', [ArtifactController::class, 'generateForm'])->name('artifacts.generate');
 
-
+// Exibe em uma view Formulario
 Route::get('/artifacts/generate/FHIRQuestionnaire', [ArtifactController::class, 'parseFHIRQuestionnaire'])->name('artifacts.generateView');
 
+// Respostas em formato FHIR.
 Route::post('/artifacts/generate/FHIRQuestionnaireResponse', [ArtifactController::class, 'FHIRQuestionnaireResponse'])->name('artifacts.response');
 
-Route::get('/artifacts/generate/FHIRQuestionnaireViewer', [ArtifactController::class, 'FHIRQuestionnaireViewer'])->name('artifacts.FHIRQuestionnaireViewer');
+Route::get('/artifacts/generate/FHIRQuestionnaireViewer', [ArtifactController::class, 'FHIRQuestionnaireViewer'])
+    ->name('artifacts.FHIRQuestionnaireViewer');
+
+Route::get('/valueset/expand', [ArtifactController::class, 'expandValueSet'])
+    ->name('valueset.expand');
+

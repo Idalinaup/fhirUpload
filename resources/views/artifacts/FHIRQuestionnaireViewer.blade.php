@@ -35,6 +35,7 @@ if($objectQuestionnaire == "Questionnaire")
 
 <body>
     <form action="{{ route('artifacts.response') }}" method="post" enctype="multipart/form-data">
+        @csrf
         <input type="hidden" name="Id" id="Id" value="{{ $objectQuestionnaire->getId() }}">
         <input type="hidden" name="objectQuestionnaire" id="objectQuestionnaire" value="{{ $objectQuestionnaire}}">
         <input type="hidden" name="status" id="status" value="{{ $objectQuestionnaire->getstatus() }}">
@@ -93,32 +94,12 @@ if($objectQuestionnaire == "Questionnaire")
 @yield('form_script')
 <br>  
 @csrf
-<button id="submit-button" type="submit" class="btn btn-success">SUBMIT</button>
+<button type="submit" class="btn btn-success">SUBMIT</button>
     </form>
 </body>
 @endif
 
 </html>
-
-<script>
-    $(document).ready(function() {
-        $('#submit-button').click(function() {
-            $.ajax({
-                url: '/artifacts/generate/FHIRQuestionnaireResponse',
-                method: 'POST',
-                data: {
-                    selectedArtifact: $('#selectedArtifact').val(), 
-                 },
-                 success: function(data) {
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
-
 
 <style>
 .tooltiptextp {

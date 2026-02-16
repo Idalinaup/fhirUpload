@@ -36,6 +36,8 @@ use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRNarrative;
 use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRReference;
 use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRDateTime;
 use DCarbone\PHPFHIRGenerated\R4\FHIRElement\FHIRQuestionnaireResponseStatus;
+use Illuminate\Support\Facades;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ArtifactController extends Controller
@@ -58,6 +60,20 @@ class ArtifactController extends Controller
         //log::debug($file);
         return Redirect::route('artifacts.index')->with('success', 'Arquivo enviado com sucesso!');
     }
+
+    public function generate(Request $request)
+{
+    $path = $request->selectedArtifact;
+
+    $content = file_get_contents(storage_path($path));
+    $decoded = json_decode($content, true);
+
+    return response()->json([
+        'fileContent' => $decoded,
+        'selectedArtifactName' => basename($path)
+    ]);
+}
+
 
     public function generateForm(Request $request) {
         $selectedArtifact = $request->input('selectedArtifact');
@@ -98,10 +114,7 @@ class ArtifactController extends Controller
         //log::debug($content);
 
         $objectQuestionnaire = $parser->parse($content);
-
-
-        //log::debug($objectQuestionnaire);
-
+        
         return view('artifacts.FHIRQuestionnaireViewer', compact('objectQuestionnaire' , 'selectedArtifactName'));
     }
 
@@ -161,6 +174,26 @@ class ArtifactController extends Controller
         log($output);
         return json_decode($output, true);
     }
+
+public function expandValueSet(Request $request)
+{
+    $url = $request->query('url');
+    $filter = $request->query('filter');
+
+    $terminologyServer = "https://tx.fhir.org/r4/ValueSet/\$expand";
+
+    $response = Http::withHeaders([
+        'Accept' => 'application/fhir+json'
+    ])
+    ->withoutVerifying() // mantém se ainda precisares por causa do SSL
+    ->get($terminologyServer, [
+        'url' => $url,
+        'filter' => $filter,
+        'count' => 20
+    ]);
+
+    return response()->json($response->json());
+}
 
     public function FHIRQuestionnaireResponse(Request $request){
 
@@ -322,7 +355,7 @@ class ArtifactController extends Controller
                 $answerItem->setValueQuantity(new FHIRQuantity($answerData));
                 break;
                 case 'coding':
-                    log::debug("coding:", $answer);
+                    //Log::debug("coding:", $answer);
                     $answerItem->setValueCoding(new FHIRCoding($answer));
                     break;
 
