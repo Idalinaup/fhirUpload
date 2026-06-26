@@ -104,7 +104,6 @@ $questionnaireStatus = $isQuestionnaire && $objectQuestionnaire->getStatus()
                     </div>
                 @endforeach
             </div>
-
             @yield('form_script')
 
             <br>
@@ -113,7 +112,6 @@ $questionnaireStatus = $isQuestionnaire && $objectQuestionnaire->getStatus()
         </form>
     @endif
 </body>
-@endif
 
 </html>
 
